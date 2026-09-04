@@ -6,17 +6,7 @@ The Inventory Management System will allow a business to manage its
 products and keep track of inventory levels.
 
 
-## Tech Stack
-* **Language:** Java (OpenJDK 26.0.2)
-* **Framework:** Spring Boot
-* **Database:** MySQL
-* **Architecture:** REST API
-* **Version Control:** Git / GitHub
-* **IDE:** IntelliJ IDEA
-
-
-
-##  Features
+## Requirements
 * **Product Management**
     * Add products
     * Edit products
@@ -30,3 +20,13 @@ products and keep track of inventory levels.
     * Calculate the total value of inventory
 * **Supplier Management**
     * Manage suppliers
+
+
+
+## Tech Stack
+* **Language:** Java (OpenJDK 26.0.2)
+* **Framework:** Spring Boot
+* **Database:** MySQL
+* **Architecture:** REST API
+* **Version Control:** Git / GitHub
+* **IDE:** IntelliJ IDEA
