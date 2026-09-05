@@ -19,7 +19,14 @@ products and keep track of inventory levels.
     * Identify products with low stock
     * Calculate the total value of inventory
 * **Supplier Management**
-    * Manage suppliers
+    * Add suppliers
+    * Edit suppliers
+    * Delete suppliers
+    * View suppliers
+    * Associate suppliers with products
+* **Purchase Management**
+    * Record purchases
+    * View purchase history
 
 
 
