@@ -30,3 +30,28 @@ products and keep track of inventory levels.
 * **Architecture:** REST API
 * **Version Control:** Git / GitHub
 * **IDE:** IntelliJ IDEA
+
+
+
+## Design
+
+### System Architecture
+
+The application will use a layered architecture:
+
+```text
+Client
+   ↓
+Controller
+   ↓
+Service
+   ↓
+Repository
+   ↓
+MySQL Database
+
+```
+- **Controller:** Receives REST API requests and returns responses.
+- **Service:** Handles the application's business logic and rules.
+- **Repository:** Handles communication with the MySQL database.
+- **MySQL Database:** Stores products, suppliers, and inventory data.
