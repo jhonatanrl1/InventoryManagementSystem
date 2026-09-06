@@ -26,7 +26,9 @@ public class Product {
     private int lowStockThreshold;
 
 
+    public Product() {
 
+    }
 
 
 
