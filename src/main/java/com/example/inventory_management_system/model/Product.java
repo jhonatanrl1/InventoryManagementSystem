@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import java.math.BigDecimal;
 
 
@@ -17,7 +18,10 @@ public class Product {
 
     private String name;
     private String description;
+
+    @Column(precision = 10, scale = 2)
     private BigDecimal sellingPrice;
+
     private int quantityInStock;
     private int lowStockThreshold;
 
