@@ -1,5 +1,6 @@
 package com.example.inventory_management_system.model;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -71,6 +72,7 @@ public class Product {
     private String description;
 
     @Column(precision = 10, scale = 2)
+    @DecimalMin(value = "0.00")
     private BigDecimal sellingPrice;
 
     private int quantityInStock;
