@@ -138,10 +138,9 @@ purchase_price
 The purchase price is stored here because the actual price paid for a product may differ from the supplier's current price.
 
 
-## Database Relationships
+### Database Relationships
 
 ```text
-
 Supplier 1 ──────── * Product_Supplier * ──────── 1 Product
 
 Supplier 1 ──────── * Purchase
@@ -156,5 +155,51 @@ The Product_Supplier table allows one product to have multiple suppliers and one
 The Purchase and Purchase_Item tables allow the system to maintain a history of actual purchases, including the quantity purchased and the price actually paid.
 
 
+## API Design
+
+The REST API will provide endpoints for managing products, suppliers, inventory, and purchases.
+
+### Products
+
+```text
+GET       /products
+GET       /products/{id}
+POST      /products
+PUT       /products/{id}
+DELETE    /products/{id}
+```
+
+### Search & Filtering
+```text
+GET       /products?search={name}
+GET       /products?lowStock=true
+```
+### Inventory
+```text
+GET       /inventory/value
+```
+
+### Suppliers
+```text
+GET       /suppliers
+GET       /suppliers/{id}
+POST      /suppliers
+PUT       /suppliers/{id}
+DELETE    /suppliers/{id}
+```
+
+### Product-Suppliers
+```text
+POST      /products/{productId}/suppliers/{supplierId}
+GET       /products/{productId}/suppliers
+DELETE    /products/{productId}/suppliers/{supplierId}
+```
+
+### Purchases
+```text
+POST      /purchases
+GET       /purchases
+GET       /purchases/{id}
+```
 
 
