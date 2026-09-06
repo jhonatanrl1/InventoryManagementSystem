@@ -1,11 +1,13 @@
 package com.example.inventory_management_system.model;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import java.math.BigDecimal;
+
 
 
 @Entity
@@ -63,7 +65,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
+    @NotBlank
     private String name;
+
     private String description;
 
     @Column(precision = 10, scale = 2)
