@@ -1,5 +1,6 @@
 package com.example.inventory_management_system.model;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.Entity;
@@ -75,7 +76,10 @@ public class Product {
     @DecimalMin(value = "0.00")
     private BigDecimal sellingPrice;
 
+    @Min(0)
     private int quantityInStock;
+
+    @Min(0)
     private int lowStockThreshold;
 
 
