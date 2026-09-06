@@ -8,12 +8,42 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
+
 import java.math.BigDecimal;
 
 
 
 @Entity
 public class Product {
+
+
+    //Product entity Fields
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long productId;
+
+    @NotBlank
+    private String name;
+
+    private String description;
+
+    @Column(precision = 10, scale = 2)
+    @DecimalMin(value = "0.00")
+    private BigDecimal sellingPrice;
+
+    @Min(0)
+    private int quantityInStock;
+
+    @Min(0)
+    private int lowStockThreshold;
+
+
+    public Product() {
+
+    }
+
+
+
     public Long getProductId() {
         return productId;
     }
@@ -61,33 +91,6 @@ public class Product {
     public void setLowStockThreshold(int lowStockThreshold) {
         this.lowStockThreshold = lowStockThreshold;
     }
-
-    //Product entity Fields
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productId;
-
-    @NotBlank
-    private String name;
-
-    private String description;
-
-    @Column(precision = 10, scale = 2)
-    @DecimalMin(value = "0.00")
-    private BigDecimal sellingPrice;
-
-    @Min(0)
-    private int quantityInStock;
-
-    @Min(0)
-    private int lowStockThreshold;
-
-
-    public Product() {
-
-    }
-
-
 
 
 }
