@@ -31,5 +31,20 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+
+    public Product updateProduct(Long id, Product product) {
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow();
+
+        existingProduct.setName(product.getName());
+        existingProduct.setDescription(product.getDescription());
+        existingProduct.setSellingPrice(product.getSellingPrice());
+        existingProduct.setQuantityInStock(product.getQuantityInStock());
+        existingProduct.setLowStockThreshold(product.getLowStockThreshold());
+
+        return productRepository.save(existingProduct);
+    }
+
+
 }
 
