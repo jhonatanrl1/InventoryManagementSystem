@@ -28,5 +28,11 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
+    @PostMapping
+    public Product createProduct(@RequestBody Product product) {
+        return productService.createProduct(product);
+    }
+
+
 
 }
