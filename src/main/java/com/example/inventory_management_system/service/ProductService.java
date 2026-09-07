@@ -26,5 +26,10 @@ public class ProductService {
                 .orElseThrow();
     }
 
+
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
+    }
+
 }
 
