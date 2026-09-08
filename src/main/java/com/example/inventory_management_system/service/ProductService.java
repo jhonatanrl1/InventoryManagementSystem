@@ -23,7 +23,7 @@ public class ProductService {
 
     public Product getProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
 
@@ -34,7 +34,7 @@ public class ProductService {
 
     public Product updateProduct(Long id, Product product) {
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
         existingProduct.setName(product.getName());
         existingProduct.setDescription(product.getDescription());
