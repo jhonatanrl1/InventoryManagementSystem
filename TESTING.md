@@ -31,8 +31,10 @@ Creates a new product and returns the saved product, including its generated pro
 
 **Test Result:**
 PASS
-```
+
 Request Body:
+```json
+
 
 {
     "name": "Laptop",
@@ -43,7 +45,7 @@ Request Body:
 }
 ```
 **Observed Response:**
-```
+```json
 {
     "description": "Business laptop",
     "lowStockThreshold": 3,
@@ -68,7 +70,7 @@ Returns a list of all products.
 PASS
 
 **Observed Response:**
-```
+```json
 [
 {
 "description": "Business laptop",
@@ -83,3 +85,31 @@ PASS
 Notes:
 
 The endpoint successfully retrieved the product from the database through the Controller, Service, and Repository layers.
+
+
+---
+
+### GET Product by ID
+
+**Endpoint:**
+GET  /products/1
+
+**Expected Result:**
+Returns the product with the specified ID.
+
+**Test Result:**
+PASS
+
+**Observed Response:**
+```json
+{
+    "description": "Business laptop",
+    "lowStockThreshold": 3,
+    "name": "Laptop",
+    "productId": 1,
+    "quantityInStock": 10,
+    "sellingPrice": 899.99
+}
+```
+
+
