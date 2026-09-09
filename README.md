@@ -1,5 +1,3 @@
-markdown
-
 # Inventory Management System
 
 The Inventory Management System will allow a business to manage its
