@@ -1,5 +1,6 @@
 package com.example.inventory_management_system.service;
 
+import com.example.inventory_management_system.exception.ProductNotFoundException;
 import com.example.inventory_management_system.model.Product;
 import com.example.inventory_management_system.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class ProductService {
 
     public Product getProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
 
@@ -34,7 +35,7 @@ public class ProductService {
 
     public Product updateProduct(Long id, Product product) {
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         existingProduct.setName(product.getName());
         existingProduct.setDescription(product.getDescription());
