@@ -194,3 +194,94 @@ Product not found
 
 The endpoint correctly returned HTTP 404 Not Found after the requested product had been deleted. The GlobalExceptionHandler handled the ProductNotFoundException and returned the appropriate HTTP status.
 
+---
+
+### POST Create Product — Validation
+
+**Endpoint:**
+POST /products
+
+**Expected Result:**
+Returns HTTP 400 Bad Request when the request contains invalid product data.
+
+**Test Result:**
+PASS
+
+**Request Body:**
+
+```json
+{
+    "name": "",
+    "description": "Invalid product test",
+    "sellingPrice": -50.00,
+    "quantityInStock": -10,
+    "lowStockThreshold": -3
+}
+```
+**Observed Response:**
+400 Bad Request and
+Validation failed
+
+**Notes:**
+
+The request was rejected because the product contained invalid values. The validation rules correctly rejected the blank name, negative selling price, negative quantity in stock, and negative low-stock threshold.
+
+
+
+### PUT Update Product — Validation
+
+**Endpoint:**
+PUT /products/{id}
+
+**Expected Result:**
+Returns HTTP 400 Bad Request when the request contains invalid product data.
+
+**Test Result:**
+PASS
+
+**Request Body:**
+
+```json
+{
+    "name": "",
+    "description": "Invalid update test",
+    "sellingPrice": -10.00,
+    "quantityInStock": -5,
+    "lowStockThreshold": -2
+}
+```
+**Observed Response:**
+400 Bad Request  and
+Validation failed
+
+**Notes:**
+
+The request was rejected because the product contained invalid values. The validation rules correctly rejected the blank name, negative selling price, negative quantity in stock, and negative low-stock threshold.
+
+
+### POST Product — Specific Validation Errors
+
+**Endpoint:**
+POST /products
+
+**Expected Result:**
+The API should reject invalid product data and return a specific validation error for each invalid field: name, selling price, quantity in stock, and low stock threshold.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+
+```json
+{
+    "quantityInStock": "must be greater than or equal to 0",
+    "sellingPrice": "must be greater than or equal to 0.00",
+    "lowStockThreshold": "must be greater than or equal to 0",
+    "name": "must not be blank"
+}
+```
+
+**Notes:**
+
+The validation successfully rejected the invalid product and returned individual validation messages for each field that failed validation. The product was not created. 
+
