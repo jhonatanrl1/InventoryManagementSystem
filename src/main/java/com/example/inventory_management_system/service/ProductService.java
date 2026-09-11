@@ -17,8 +17,15 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+
+
+    public List<Product> getAllProducts(String search) {
+
+        if (search == null || search.isBlank()) {
+            return productRepository.findAll();
+        }
+
+        return productRepository.findByNameContainingIgnoreCase(search);
     }
 
 

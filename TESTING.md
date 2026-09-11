@@ -285,3 +285,57 @@ Pass
 
 The validation successfully rejected the invalid product and returned individual validation messages for each field that failed validation. The product was not created. 
 
+### GET Products — Search by Product Name
+
+**Endpoint:** 
+
+GET /products?search=keyboard  
+GET /products?search=KEYBOARD
+
+**Expected Result:** 
+The API should return products whose names contain the search term, regardless of capitalization.
+
+**Test Result:** 
+Pass
+
+**Observed Response:**
+
+```json
+[
+    {
+        "description": "Mechanical keyboard",
+        "lowStockThreshold": 3,
+        "name": "Keyboard",
+        "productId": 2,
+        "quantityInStock": 10,
+        "sellingPrice": 79.99
+    }
+]
+```
+
+**Notes:**
+
+Notes: The search successfully returned the product matching the search term "keyboard" and "KEYBOARD" . The search is case-insensitive.
+
+
+## GET Products — Search with no matching products
+
+**Endpoint:**
+GET /products?search=zzzzzz  
+
+
+**Expected Result:**
+The API should return 200 OK with an empty array [].
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+
+```json
+[]
+```
+**Notes:**
+
+The empty array indicates that no product matched the search term zzzzzz.
+
