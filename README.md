@@ -89,6 +89,7 @@ Supplier
 -----------------------------
 supplier_id             PK
 name
+contact_name
 email
 phone
 ```
