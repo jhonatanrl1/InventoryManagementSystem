@@ -430,6 +430,58 @@ Pass
 **Notes:**
 The Keyboard was excluded because quantityInStock (10) is greater than lowStockThreshold (3).
 
+## GET Inventory — Calculate inventory value
+
+**Endpoint:**  
+GET /inventory/value
+
+**Expected Result:**  
+The API should return the total inventory value by multiplying each product's sellingPrice by its quantityInStock and adding the values together.
+
+**Test Result:**  
+Pass
+
+**Observed Response:**
+
+```text
+799.90
+```
+
+**Notes:**
+
+The Keyboard has a selling price of $79.99 and a quantity in stock of 10.
+
+79.99 × 10 = 799.90
+
+The API returned the expected total inventory value.
 
 
+### Test 2 — Multiple products
+
+**Endpoint:**  
+GET /inventory/value
+
+**Test Data:**
+
+```text
+Keyboard: $79.99 × 10 = $799.90
+Mouse: $29.99 × 5 = $149.95
+```
+**Expected Result:**
+The API should calculate the value of each product and return the combined inventory value.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+```
+949.85
+```
+
+**Notes:**
+
+The API correctly calculated the inventory value for multiple products.
+```
+$799.90 + $149.95 = $949.85
+```
 
