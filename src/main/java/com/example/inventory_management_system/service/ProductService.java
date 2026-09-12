@@ -58,7 +58,9 @@ public class ProductService {
     }
 
 
-
+    public List<Product> getLowStockProducts() {
+        return productRepository.findLowStockProducts();
+    }
 
 }
 

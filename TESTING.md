@@ -339,3 +339,97 @@ Pass
 
 The empty array indicates that no product matched the search term zzzzzz.
 
+## GET Products — Low-stock products
+
+**Endpoint:**
+GET /products/low-stock
+
+
+**Expected Result:**
+The API should return products where quantityInStock is less than or equal to lowStockThreshold.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+
+```json
+[
+  {
+    "description": "Mechanical keyboard",
+    "lowStockThreshold": 3,
+    "name": "Keyboard",
+    "productId": 2,
+    "quantityInStock": 2,
+    "sellingPrice": 79.99
+  }
+]
+```
+
+**Notes:**
+
+This test confirms that the repository → service → controller → database low-stock functionality works correctly when quantityInStock <= lowStockThreshold.
+
+
+## GET Products — Low-stock products
+
+**Endpoint:**
+GET /products?lowStock=true
+
+**Expected Result:**
+The API should return products where quantityInStock is less than or equal to lowStockThreshold.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+
+```json
+[
+  {
+    "description": "Mechanical keyboard",
+    "lowStockThreshold": 3,
+    "name": "Keyboard",
+    "productId": 2,
+    "quantityInStock": 2,
+    "sellingPrice": 79.99
+  }
+]
+```
+
+**Notes:**
+
+This test confirms that products meeting the condition quantityInStock <= lowStockThreshold are returned by the low-stock filter.
+
+---
+
+### Test 2 — Product does not meet low-stock condition
+
+**Endpoint:**
+GET /products?lowStock=true
+
+**Test Data:**
+
+```text
+quantityInStock = 10
+lowStockThreshold = 3
+```
+
+**Expected Result:**
+The API should exclude products where quantityInStock is greater than lowStockThreshold.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+
+```json
+[]
+```
+
+**Notes:**
+The Keyboard was excluded because quantityInStock (10) is greater than lowStockThreshold (3).
+
+
+
+

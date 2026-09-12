@@ -21,7 +21,13 @@ public class ProductController {
 
     @GetMapping
     public List<Product> getAllProducts(
-            @RequestParam(required = false) String search) {
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Boolean lowStock) {
+
+        if (Boolean.TRUE.equals(lowStock)){
+            return productService.getLowStockProducts();
+        }
+
 
         return productService.getAllProducts(search);
     }
@@ -49,4 +55,7 @@ public class ProductController {
     }
 
 
+
+
 }
+
