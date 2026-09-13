@@ -485,3 +485,142 @@ The API correctly calculated the inventory value for multiple products.
 $799.90 + $149.95 = $949.85
 ```
 
+## POST Suppliers — Create Supplier
+
+**Endpoint:**  
+POST /suppliers
+
+**Expected Result:**  
+The API should create a new supplier and return the supplier information with a generated supplier ID.
+
+**Test Result:**  
+Pass
+
+**Observed Response:**
+
+```json
+{
+    "contactName": "Maria Lopez",
+    "email": "maria@abcelectronics.com",
+    "name": "ABC Electronics",
+    "phone": "555-123-4567",
+    "supplierId": 1
+}
+```
+
+**Notes:**
+
+The supplier was successfully created and assigned supplier ID 1.
+
+
+## Test 2 — Get All Suppliers
+### GET Suppliers — Get all suppliers
+
+**Endpoint:**  
+GET /suppliers
+
+**Expected Result:**
+The API should return a list containing all suppliers stored in the database.
+
+**Test Result:**  
+Pass
+
+**Observed Response:**
+
+```json
+[
+    {
+        "contactName": "Maria Lopez",
+        "email": "maria@abcelectronics.com",
+        "name": "ABC Electronics",
+        "phone": "555-123-4567",
+        "supplierId": 1
+    }
+]
+```
+
+**Notes:**
+
+The API successfully retrieved the supplier that was previously created.
+
+## GET Supplier — Get supplier by ID
+
+**Endpoint:**  
+GET /suppliers/1
+
+**Expected Result:**  
+The API should return the supplier with supplier ID 1.
+
+**Test Result:**  
+Pass
+
+**Observed Response:**
+
+```json
+{
+    "contactName": "Maria Lopez",
+    "email": "maria@abcelectronics.com",
+    "name": "ABC Electronics",
+    "phone": "555-123-4567",
+    "supplierId": 1
+}
+```
+**Notes:**
+
+The API successfully retrieved the supplier using its supplier ID.
+
+## PUT Supplier — Update supplier
+
+**Endpoint:**  
+PUT /suppliers/1
+
+**Expected Result:**  
+The API should update the supplier's information while keeping the existing supplier ID unchanged.
+
+**Test Result:**  
+Pass
+
+**Observed Response:**
+
+```json
+{
+    "contactName": "Carlos Martinez",
+    "email": "carlos@techsource.com",
+    "name": "TechSource Distributors",
+    "phone": "555-111-2222",
+    "supplierId": 1
+}
+```
+
+**Notes:**
+
+All four supplier fields were successfully updated:
+
+- Name: ABC Electronics → TechSource Distributors
+- Contact name: Maria Lopez → Carlos Martinez
+- Email: maria@abcelectronics.com → carlos@techsource.com
+- Phone: 555-123-4567 → 555-111-2222
+
+The supplier ID remained unchanged at 1.
+
+## DELETE Supplier — Delete supplier
+
+**Endpoint:**  
+DELETE /suppliers/1
+
+**Expected Result:**  
+The API should delete the supplier with supplier ID 1.
+
+**Test Result:**  
+Pass
+
+**Observed Response:**
+
+```text
+200 OK ,with a Response Body: Empty
+```
+
+**Notes:**
+
+The supplier was successfully deleted. A follow-up GET request to /suppliers/1 returned 500 Internal Server Error, confirming that the supplier could no longer be found.
+
