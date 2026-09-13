@@ -624,3 +624,27 @@ Pass
 
 The supplier was successfully deleted. A follow-up GET request to /suppliers/1 returned 500 Internal Server Error, confirming that the supplier could no longer be found.
 
+## GET Supplier — Non-existent Supplier
+
+**Endpoint:**
+GET /suppliers/1
+
+**Expected Result:**
+The API should return 404 Not Found when the requested supplier does not exist.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+```text
+404 Not Found
+
+Response Body:  Supplier not found
+
+```
+
+**Notes:**
+
+Supplier ID 1 had been deleted. The API correctly returned 404 Not Found instead of a 500 Internal Server Error.
+
+

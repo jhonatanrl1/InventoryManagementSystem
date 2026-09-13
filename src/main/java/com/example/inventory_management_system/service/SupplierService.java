@@ -3,6 +3,7 @@ package com.example.inventory_management_system.service;
 import com.example.inventory_management_system.model.Supplier;
 import com.example.inventory_management_system.repository.SupplierRepository;
 import org.springframework.stereotype.Service;
+import com.example.inventory_management_system.exception.SupplierNotFoundException;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class SupplierService {
 
     public Supplier getSupplierById(Long id) {
         return supplierRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+                .orElseThrow(() -> new SupplierNotFoundException("Supplier not found"));
     }
 
     public Supplier createSupplier(Supplier supplier) {

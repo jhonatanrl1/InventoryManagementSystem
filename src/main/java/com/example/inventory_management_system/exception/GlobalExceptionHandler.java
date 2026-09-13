@@ -1,7 +1,5 @@
 package com.example.inventory_management_system.exception;
 
-
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -34,6 +32,15 @@ public class GlobalExceptionHandler {
 
         return errors;
     }
+
+
+    @ExceptionHandler(SupplierNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleSupplierNotFound(SupplierNotFoundException exception) {
+        return exception.getMessage();
+    }
+
+
 
 }
 
