@@ -648,3 +648,149 @@ Response Body:  Supplier not found
 Supplier ID 1 had been deleted. The API correctly returned 404 Not Found instead of a 500 Internal Server Error.
 
 
+## POST ProductSupplier — Create Product-Supplier Relationship
+
+**Endpoint:**
+POST /product-suppliers
+
+**Request:**
+Product ID 2, Supplier ID 2, Purchase Price $47.00
+
+**Expected Result:**
+The API should successfully create the Product-Supplier relationship and return the composite ID containing both Product ID and Supplier ID.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+```json
+id": {
+        "product": 2,
+        "supplier": 2
+    }
+```
+**Notes:**
+
+The @EmbeddedId and @MapsId mapping successfully created the relationship. The original Hibernate 500 error no longer occurs.
+
+## GET ProductSupplier — Retrieve All Product-Supplier Relationships
+
+**Endpoint:**
+GET /product-suppliers
+
+**Expected Result:**
+The API should return all product-supplier relationships, including
+the composite ID, product information, supplier information, and
+supplier-specific purchase price.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+```json
+[
+    {
+        "id": {
+            "product": 2,
+            "supplier": 2
+        },
+        "product": {
+            "description": "Mechanical keyboard",
+            "lowStockThreshold": 3,
+            "name": "Keyboard",
+            "productId": 2,
+            "quantityInStock": 10,
+            "sellingPrice": 79.99
+        },
+        "purchasePrice": 47.00,
+        "supplier": {
+            "contactName": "Carlos Martinez",
+            "email": "carlos@techsource.com",
+            "name": "TechSource Distributors",
+            "phone": "555-111-2222",
+            "supplierId": 2
+        }
+    }
+]
+```
+**Notes:**
+
+Product #2 is associated with Supplier #2 with a purchase price of 47.00. The response returned the complete Product and Supplier information for the relationship.
+
+## PUT ProductSupplier — Update Supplier-Specific Purchase Price
+
+**Endpoint:**
+PUT /product-suppliers/2/2
+
+**Request Body:**
+```json
+{ 
+  "purchasePrice": 45.00
+}
+```
+
+**Expected Result:**
+The API should update the purchase price for the Product #2 and Supplier #2 relationship while keeping the existing product-supplier association unchanged.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+```json
+{
+  "id": {
+    "product": 2,
+    "supplier": 2
+  },
+  "product": {
+    "description": "Mechanical keyboard",
+    "lowStockThreshold": 3,
+    "name": "Keyboard",
+    "productId": 2,
+    "quantityInStock": 10,
+    "sellingPrice": 79.99
+  },
+  "purchasePrice": 45.00,
+  "supplier": {
+    "contactName": "Carlos Martinez",
+    "email": "carlos@techsource.com",
+    "name": "TechSource Distributors",
+    "phone": "555-111-2222",
+    "supplierId": 2
+  }
+}
+```
+**Notes:**
+
+The purchase price was successfully updated from 47.00 to 45.00. The Product #2 and Supplier #2 relationship remained intact.
+
+
+## DELETE ProductSupplier — Remove Product-Supplier Relationship
+
+**Endpoint:**
+DELETE /product-suppliers/2/2
+
+**Expected Result:**
+The API should remove the relationship between Product #2 and Supplier #2 without deleting either the product or supplier.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+200 OK
+```
+ The response body was empty.
+```
+
+**Notes:**
+
+The ProductSupplier relationship was successfully removed from the database. The row containing Product #2, Supplier #2, and purchase price 45.00 was no longer present.
+
+Additional Verification:
+A GET /product-suppliers request returned:
+```json
+[]
+```
+
+This confirmed that the ProductSupplier relationship was successfully deleted.
+

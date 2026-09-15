@@ -189,9 +189,10 @@ DELETE    /suppliers/{id}
 
 ### Product-Suppliers
 ```text
-POST      /products/{productId}/suppliers/{supplierId}
-GET       /products/{productId}/suppliers
-DELETE    /products/{productId}/suppliers/{supplierId}
+POST      /product-suppliers
+GET       /product-suppliers
+PUT       /product-suppliers/{productId}/{supplierId}
+DELETE    /product-suppliers/{productId}/{supplierId}
 ```
 
 ### Purchases

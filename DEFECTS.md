@@ -37,3 +37,26 @@ Validation failed
 - Quantity in stock cannot be negative.
 - Low-stock threshold cannot be negative.
 
+## DEF-002 — ProductSupplier Hibernate ID Mapping Error
+
+**Status:** 
+Resolved
+
+**Problem:**
+Creating a ProductSupplier relationship resulted in a 500 Internal Server Error.
+
+**Error:**
+Could not assign id from null association 'product'
+
+**Cause:**
+The original @IdClass mapping caused Hibernate to have difficulty
+mapping the Product and Supplier associations to the composite ID.
+
+**Final Result:**
+Changed ProductSupplier to use @EmbeddedId with @MapsId for the
+Product and Supplier relationships.
+
+**Verification:**
+POST /product-suppliers successfully created the relationship
+with product ID 2, supplier ID 2, and purchase price 47.00.
+
