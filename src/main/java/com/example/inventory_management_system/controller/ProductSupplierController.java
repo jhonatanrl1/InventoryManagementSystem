@@ -29,6 +29,17 @@ public class ProductSupplierController {
         return productSupplierService.getAllProductSuppliers();
     }
 
+    @GetMapping("/{productId}/{supplierId}")
+    public ProductSupplier getProductSupplier(
+            @PathVariable Long productId,
+            @PathVariable Long supplierId) {
+
+        ProductSupplierId id = new ProductSupplierId(productId, supplierId);
+
+        return productSupplierService.getProductSupplier(id);
+    }
+
+
     @PutMapping("/{productId}/{supplierId}")
     public ProductSupplier updateProductSupplier(
             @PathVariable Long productId,
@@ -52,5 +63,6 @@ public class ProductSupplierController {
     }
 
 }
+
 
 

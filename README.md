@@ -191,6 +191,7 @@ DELETE    /suppliers/{id}
 ```text
 POST      /product-suppliers
 GET       /product-suppliers
+GET       /product-suppliers/{productId}/{supplierId}
 PUT       /product-suppliers/{productId}/{supplierId}
 DELETE    /product-suppliers/{productId}/{supplierId}
 ```

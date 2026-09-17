@@ -673,6 +673,73 @@ id": {
 
 The @EmbeddedId and @MapsId mapping successfully created the relationship. The original Hibernate 500 error no longer occurs.
 
+## POST ProductSupplier — Missing Product
+
+**Endpoint:**  
+POST /product-suppliers
+
+**Request Body:**
+```json
+{
+  "product": {
+    "productId": 999
+  },
+  "supplier": {
+    "supplierId": 2
+  },
+  "purchasePrice": 45.00
+}
+```
+**Expected Result:**
+The API should return a 404 error because Product 999 does not exist.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+404 Not Found
+```text
+Product not found
+```
+**Notes:**
+
+The API correctly detected that the specified product does not exist and returned the appropriate Product not found message.
+
+
+## POST ProductSupplier — Missing Supplier
+
+**Endpoint:**
+POST /product-suppliers
+
+**Request Body:**
+```json
+{
+    "product": {
+        "productId": 2
+    },
+    "supplier": {
+        "supplierId": 999
+    },
+    "purchasePrice": 45.00
+}
+```
+
+**Expected Result:**
+The API should return a 404 error because Supplier 999 does not exist.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+404 Not Found
+```text
+Supplier not found
+```
+
+**Notes:**
+
+The API correctly detected that the specified supplier does not exist and returned the appropriate Supplier not found message.
+
 ## GET ProductSupplier — Retrieve All Product-Supplier Relationships
 
 **Endpoint:**
@@ -716,6 +783,68 @@ Pass
 **Notes:**
 
 Product #2 is associated with Supplier #2 with a purchase price of 47.00. The response returned the complete Product and Supplier information for the relationship.
+
+
+## GET ProductSupplier — Retrieve One Product-Supplier Relationship
+
+**Endpoint:**
+GET /product-suppliers/2/2
+
+**Expected Result:**
+The API should return the Product-Supplier relationship for Product 2 and Supplier 2, including the composite ID, product information, supplier information, and purchase price.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+```json
+{
+  "id": {
+    "product": 2,
+    "supplier": 2
+  },
+  "product": {
+    "description": "Mechanical keyboard",
+    "lowStockThreshold": 3,
+    "name": "Keyboard",
+    "productId": 2,
+    "quantityInStock": 10,
+    "sellingPrice": 79.99
+  },
+  "purchasePrice": 45.00,
+  "supplier": {
+    "contactName": "Carlos Martinez",
+    "email": "carlos@techsource.com",
+    "name": "TechSource Distributors",
+    "phone": "555-111-2222",
+    "supplierId": 2
+  }
+}
+```
+**Notes:**
+
+The API successfully retrieved the Product 2 and Supplier 2 relationship using the composite ID. The response included the associated product, supplier, and supplier-specific purchase price.
+
+## GET ProductSupplier — Relationship Not Found
+
+**Endpoint:**
+GET /product-suppliers/999/999
+
+**Expected Result:**
+The API should return a 404 error because the Product-Supplier relationship does not exist.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+404 Not Found
+```text
+ProductSupplier not found
+```
+
+**Notes:**
+
+The API correctly detected that the requested Product-Supplier relationship does not exist and returned the appropriate ProductSupplier not found message.
 
 ## PUT ProductSupplier — Update Supplier-Specific Purchase Price
 

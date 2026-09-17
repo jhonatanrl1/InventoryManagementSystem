@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.ResponseEntity;
 
 
 import java.util.HashMap;
@@ -40,7 +41,14 @@ public class GlobalExceptionHandler {
         return exception.getMessage();
     }
 
+    @ExceptionHandler(ProductSupplierNotFoundException.class)
+    public ResponseEntity<String> handleProductSupplierNotFound(
+            ProductSupplierNotFoundException ex) {
 
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
 
 }
 
