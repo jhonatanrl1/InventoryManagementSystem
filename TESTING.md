@@ -1198,3 +1198,80 @@ Purchase not found
 
 The API correctly handled the invalid purchase ID using PurchaseNotFoundException and returned a 404 Not Found response.
 
+## POST Purchase — Invalid Supplier ID
+
+**Endpoint:**
+POST /purchases
+
+**Request Body:**
+```json
+{
+    "supplier": {
+        "supplierId": 999
+    },
+    "purchaseDate": "2026-09-19T13:00:00",
+    "purchaseItems": [
+        {
+            "product": {
+                "productId": 2
+            },
+            "quantity": 10,
+            "purchasePrice": 45.00
+        }
+    ]
+}
+```
+
+**Expected Result:**
+The API should return a 404 Not Found response when the specified supplier does not exist.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+```text
+Supplier not found
+```
+
+**Notes:**
+The API correctly detected that Supplier ID 999 does not exist and returned a 404 Not Found response using SupplierNotFoundException.
+
+## POST Purchase — Invalid Product ID
+
+**Endpoint:**
+POST /purchases
+
+**Request Body:**
+```json
+{
+    "supplier": {
+        "supplierId": 2
+    },
+    "purchaseDate": "2026-09-19T13:00:00",
+    "purchaseItems": [
+        {
+            "product": {
+                "productId": 999
+            },
+            "quantity": 10,
+            "purchasePrice": 45.00
+        }
+    ]
+}
+```
+
+**Expected Result:**
+The API should return a 404 Not Found response when the specified product does not exist.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+```text
+Supplier not found
+```
+
+**Notes:**
+
+The API correctly detected that Product ID 999 does not exist and returned a 404 Not Found response using ProductNotFoundException.
+
