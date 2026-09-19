@@ -1177,6 +1177,24 @@ The response included:
 - Purchase Price: 45.00
 
 
+## GET Purchase by ID — Invalid ID
 
+**Endpoint:**
+GET /purchases/999
 
+**Expected Result:**
+The API should return a 404 Not Found response when the requested purchase does not exist.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+404 Not Found
+```text
+Purchase not found
+```
+
+**Notes:**
+
+The API correctly handled the invalid purchase ID using PurchaseNotFoundException and returned a 404 Not Found response.
 

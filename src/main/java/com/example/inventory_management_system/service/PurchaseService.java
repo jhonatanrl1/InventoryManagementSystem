@@ -12,6 +12,8 @@ import com.example.inventory_management_system.exception.SupplierNotFoundExcepti
 import com.example.inventory_management_system.model.Supplier;
 import com.example.inventory_management_system.model.Product;
 
+import com.example.inventory_management_system.exception.PurchaseNotFoundException;
+
 import java.util.List;
 
 @Service
@@ -80,9 +82,10 @@ public class PurchaseService {
     public Purchase getPurchase(Long id) {
         return purchaseRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Purchase not found"));
+                        new PurchaseNotFoundException("Purchase not found"));
     }
 }
+
 
 
 

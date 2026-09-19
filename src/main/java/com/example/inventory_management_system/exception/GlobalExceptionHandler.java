@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.http.ResponseEntity;
 
+import com.example.inventory_management_system.exception.PurchaseNotFoundException;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +51,15 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
     }
+
+
+    @ExceptionHandler(PurchaseNotFoundException.class)
+    public ResponseEntity<String> handlePurchaseNotFound(PurchaseNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
+
+
 
 }
 
