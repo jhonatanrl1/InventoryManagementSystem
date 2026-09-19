@@ -923,3 +923,260 @@ A GET /product-suppliers request returned:
 
 This confirmed that the ProductSupplier relationship was successfully deleted.
 
+
+## POST Purchase
+
+**Endpoint:**
+POST /purchases
+
+**Request Body:**
+```json
+{
+    "supplier": {
+        "supplierId": 2
+    },
+    "purchaseDate": "2026-09-18T13:00:00",
+    "purchaseItems": [
+        {
+            "product": {
+                "productId": 2
+            },
+            "quantity": 10,
+            "purchasePrice": 45.00
+        }
+    ]
+}
+```
+
+**Expected Result:**
+The API should create a new purchase and associate it with an existing supplier and product. The purchase item should store the purchase quantity and historical purchase price.
+
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+```json
+{
+    "purchaseDate": "2026-09-18T13:00:00",
+    "purchaseId": 3,
+    "purchaseItems": [
+        {
+            "product": {
+                "description": "Mechanical keyboard",
+                "lowStockThreshold": 3,
+                "name": "Keyboard",
+                "productId": 2,
+                "quantityInStock": 10,
+                "sellingPrice": 79.99
+            },
+            "purchaseItemId": 3,
+            "purchasePrice": 45.00,
+            "quantity": 10
+        }
+    ],
+    "supplier": {
+        "contactName": "Carlos Martinez",
+        "email": "carlos@techsource.com",
+        "name": "TechSource Distributors",
+        "phone": "555-111-2222",
+        "supplierId": 2
+    }
+}
+```
+
+**Notes:**
+
+The API created Purchase ID 3 and Purchase Item ID 3.
+
+The response correctly returned the existing Supplier ID 2 (TechSource Distributors) and Product ID 2 (Keyboard) with their database information.
+
+The purchase item returned:
+
+- Quantity: 10
+
+- Purchase Price: 45.00
+
+
+## GET All Purchases
+
+**Endpoint:**
+GET /purchases
+
+**Expected Result:**
+The API should return all purchases stored in the database, including their associated purchase items, products, and suppliers.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+```json
+[
+    {
+        "purchaseDate": "2026-09-18T13:00:00",
+        "purchaseId": 1,
+        "purchaseItems": [
+            {
+                "product": {
+                    "description": "Mechanical keyboard",
+                    "lowStockThreshold": 3,
+                    "name": "Keyboard",
+                    "productId": 2,
+                    "quantityInStock": 10,
+                    "sellingPrice": 79.99
+                },
+                "purchaseItemId": 1,
+                "purchasePrice": 45.00,
+                "quantity": 10
+            }
+        ],
+        "supplier": {
+            "contactName": "Carlos Martinez",
+            "email": "carlos@techsource.com",
+            "name": "TechSource Distributors",
+            "phone": "555-111-2222",
+            "supplierId": 2
+        }
+    },
+    {
+        "purchaseDate": "2026-09-18T13:00:00",
+        "purchaseId": 2,
+        "purchaseItems": [
+            {
+                "product": {
+                    "description": "Mechanical keyboard",
+                    "lowStockThreshold": 3,
+                    "name": "Keyboard",
+                    "productId": 2,
+                    "quantityInStock": 10,
+                    "sellingPrice": 79.99
+                },
+                "purchaseItemId": 2,
+                "purchasePrice": 45.00,
+                "quantity": 10
+            }
+        ],
+        "supplier": {
+            "contactName": "Carlos Martinez",
+            "email": "carlos@techsource.com",
+            "name": "TechSource Distributors",
+            "phone": "555-111-2222",
+            "supplierId": 2
+        }
+    },
+    {
+        "purchaseDate": "2026-09-18T13:00:00",
+        "purchaseId": 3,
+        "purchaseItems": [
+            {
+                "product": {
+                    "description": "Mechanical keyboard",
+                    "lowStockThreshold": 3,
+                    "name": "Keyboard",
+                    "productId": 2,
+                    "quantityInStock": 10,
+                    "sellingPrice": 79.99
+                },
+                "purchaseItemId": 3,
+                "purchasePrice": 45.00,
+                "quantity": 10
+            }
+        ],
+        "supplier": {
+            "contactName": "Carlos Martinez",
+            "email": "carlos@techsource.com",
+            "name": "TechSource Distributors",
+            "phone": "555-111-2222",
+            "supplierId": 2
+        }
+    }
+]
+```
+**Notes:**
+
+The API returned all three existing purchase records:
+
+- Purchase ID 1
+
+- Purchase ID 2
+
+- Purchase ID 3
+
+Each purchase correctly returned: 
+
+- Purchase date
+
+- Supplier information
+
+- Purchase item information
+
+- Product information
+
+- Quantity
+
+- Historical purchase price
+
+
+## GET Purchase by ID
+
+**Endpoint:**
+GET /purchases/3
+
+**Expected Result:**
+The API should return the purchase matching the specified purchase ID.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+```json
+{
+    "purchaseDate": "2026-09-18T13:00:00",
+    "purchaseId": 3,
+    "purchaseItems": [
+        {
+            "product": {
+                "description": "Mechanical keyboard",
+                "lowStockThreshold": 3,
+                "name": "Keyboard",
+                "productId": 2,
+                "quantityInStock": 10,
+                "sellingPrice": 79.99
+            },
+            "purchaseItemId": 3,
+            "purchasePrice": 45.00,
+            "quantity": 10
+        }
+    ],
+    "supplier": {
+        "contactName": "Carlos Martinez",
+        "email": "carlos@techsource.com",
+        "name": "TechSource Distributors",
+        "phone": "555-111-2222",
+        "supplierId": 2
+    }
+}
+```
+
+**Notes:**
+
+The API correctly returned Purchase ID 3.
+
+The response included:
+
+- Purchase ID: 3
+
+- Purchase date: 2026-09-18T13:00:00
+
+- Supplier: TechSource Distributors (Supplier ID 2)
+
+- Product: Keyboard (Product ID 2)
+
+- Quantity: 10
+
+- Purchase Price: 45.00
+
+
+
+
+
