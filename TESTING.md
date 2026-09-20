@@ -924,6 +924,28 @@ A GET /product-suppliers request returned:
 This confirmed that the ProductSupplier relationship was successfully deleted.
 
 
+## DELETE ProductSupplier — Invalid Relationship ID
+
+**Endpoint:**
+DELETE /product-suppliers/999/999
+
+**Expected Result:**
+The API should return 404 Not Found because the Product-Supplier relationship does not exist.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+404 Not Found
+```text
+ProductSupplier not found
+```
+
+**Notes:**
+
+The API correctly handled the invalid Product-Supplier relationship using ProductSupplierNotFoundException and returned a 404 Not Found response.
+
+
 ## POST Purchase
 
 **Endpoint:**
