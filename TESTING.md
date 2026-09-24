@@ -1297,3 +1297,137 @@ Supplier not found
 
 The API correctly detected that Product ID 999 does not exist and returned a 404 Not Found response using ProductNotFoundException.
 
+# Automated Tests
+
+## ProductServiceTest
+
+✅ getProductByIdReturnsProduct()
+- Verifies an existing product is returned.
+
+✅ getProductByIdThrowsExceptionWhenProductDoesNotExist()
+- Verifies ProductNotFoundException is thrown when the product does not exist.
+
+✅ createProductReturnsSavedProduct()
+- Verifies that a product is successfully created and returned by the service.
+
+✅ updateProductReturnsUpdatedProduct()
+- Verifies that an existing product is updated and the updated product is returned.
+
+✅ getAllProductsReturnsAllProductsWhenNoSearchIsProvided()
+- Verifies that all products are returned when no search term is provided.
+
+# Search & Filtering
+
+## ProductServiceTest
+
+✅ getAllProductsReturnsMatchingProductsForSearch()
+- Verifies that products are returned when a search term is provided, including case-insensitive searches.
+
+✅ getAllProductsReturnsEmptyListWhenSearchHasNoMatches()
+- Verifies that a search with no matching products returns an empty list.
+
+✅ getLowStockProductsReturnsLowStockProducts()
+- Verifies that products at or below their low-stock threshold are returned.
+
+
+## InventoryServiceTest
+
+✅ calculateInventoryValueReturnsCorrectTotal()
+- Verifies that inventory value is calculated by multiplying selling price by quantity in stock.
+
+✅ calculateInventoryValueReturnsCorrectTotalForMultipleProducts()
+- Verifies that inventory value is correctly calculated across multiple products.
+
+## SupplierServiceTest
+
+✅ getSupplierByIdReturnsSupplier()
+- Verifies that an existing supplier can be retrieved by supplier ID.
+
+✅ getSupplierByIdThrowsExceptionWhenSupplierDoesNotExist()
+- Verifies SupplierNotFoundException is thrown when the supplier does not exist.
+
+✅ createSupplierReturnsSavedSupplier()
+- Verifies that a supplier is successfully created and returned by the service.
+
+✅ updateSupplierReturnsUpdatedSupplier()
+- Verifies that an existing supplier is updated and the updated supplier is returned.
+
+✅ getAllSuppliersReturnsAllSuppliers()
+- Verifies that all suppliers are returned by the service.
+
+✅ deleteSupplierRemovesSupplier()
+- Verifies that an existing supplier is deleted by the service.
+
+## ProductSupplierServiceTest
+
+✅ getProductSupplierReturnsProductSupplier()
+- Verifies that an existing ProductSupplier relationship is returned with the correct product, supplier, and purchase price.
+
+✅ getProductSupplierThrowsExceptionWhenNotFound()
+- Verifies that ProductSupplierNotFoundException is thrown when the requested ProductSupplier relationship does not exist.
+
+✅ createProductSupplierReturnsSavedProductSupplier()
+- Verifies that a ProductSupplier relationship is successfully created when the referenced Product and Supplier exist.
+- Verifies the Product ID, Supplier ID, Product name, Supplier name, and purchase price.
+
+✅ createProductSupplierThrowsExceptionWhenProductDoesNotExist()
+- Verifies that ProductNotFoundException is thrown when the Product does not exist.
+
+✅ createProductSupplierThrowsExceptionWhenSupplierDoesNotExist()
+- Verifies that SupplierNotFoundException is thrown when the Supplier does not exist.
+
+✅ getAllProductSuppliersReturnsAllProductSuppliers()
+- Verifies that all ProductSupplier relationships are returned with the correct products, suppliers, and purchase prices.
+
+✅ updateProductSupplierReturnsUpdatedProductSupplier()
+- Verifies that an existing ProductSupplier relationship can be updated and the new purchase price is returned.
+- Verifies that the Product and Supplier relationship remains unchanged.
+
+✅ updateProductSupplierThrowsExceptionWhenNotFound()
+- Verifies that ProductSupplierNotFoundException is thrown when the ProductSupplier relationship does not exist.
+
+✅ deleteProductSupplierRemovesProductSupplier()
+- Verifies that an existing ProductSupplier relationship is deleted.
+
+✅ deleteProductSupplierThrowsExceptionWhenNotFound()
+- Verifies that ProductSupplierNotFoundException is thrown when attempting to delete a ProductSupplier relationship that does not exist.
+
+## PurchaseServiceTest
+
+✅ createPurchaseReturnsSavedPurchase()
+- Verifies that a Purchase is successfully created with the correct supplier and purchase item details.
+- Verifies that the product, quantity, and historical purchase price are retained.
+
+✅ createPurchaseThrowsExceptionWhenSupplierDoesNotExist()
+- Verifies that creating a Purchase with a non-existent supplier throws SupplierNotFoundException.
+
+✅ createPurchaseThrowsExceptionWhenProductDoesNotExist()
+- Verifies that creating a Purchase with a non-existent product throws ProductNotFoundException.
+
+✅ getAllPurchasesReturnsAllPurchases()
+- Verifies that all existing Purchases are returned.
+- Verifies that the returned list contains the expected Purchase IDs.
+
+✅ getPurchaseReturnsPurchase()
+- Verifies that an existing Purchase is returned when searched by its ID.
+
+✅ getPurchaseThrowsExceptionWhenNotFound()
+- Verifies that PurchaseNotFoundException is thrown when the requested Purchase does not exist.
+
+## PurchaseItemServiceTest
+
+✅ createPurchaseItemReturnsSavedPurchaseItem()
+- Verifies that a PurchaseItem is successfully saved and returned.
+- Verifies the PurchaseItem ID, quantity, and purchase price.
+
+✅ getAllPurchaseItemsReturnsAllPurchaseItems()
+- Verifies that all existing PurchaseItems are returned.
+- Verifies that the returned list contains the expected PurchaseItem IDs.
+
+✅ getPurchaseItemReturnsPurchaseItem()
+- Verifies that an existing PurchaseItem is returned when searched by its ID.
+- Verifies the PurchaseItem ID, quantity, and purchase price.
+
+✅ getPurchaseItemThrowsExceptionWhenNotFound()
+- Verifies that a RuntimeException is thrown when the requested PurchaseItem does not exist.
+
