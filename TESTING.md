@@ -1431,3 +1431,380 @@ The API correctly detected that Product ID 999 does not exist and returned a 404
 ✅ getPurchaseItemThrowsExceptionWhenNotFound()
 - Verifies that a RuntimeException is thrown when the requested PurchaseItem does not exist.
 
+## Automated Controller Tests
+
+### GET Products — Retrieve All Products
+
+**Test:** getAllProductsReturnsProducts()
+
+**Test Class:** ProductControllerTest.java
+
+**Endpoint:** `GET /products`
+
+**Expected Result:**
+- HTTP 200 OK
+- Response contains 2 products
+- Product #1 ID and name are correct
+- Product #2 ID and name are correct
+
+**Test Result:** 
+Pass
+
+### GET Product — Retrieve Product by ID
+
+**Test:** getProductByIdReturnsProduct()
+
+**Test Class:** ProductControllerTest.java
+
+**Endpoint:** `GET /products/{id}`
+
+**Expected Result:**
+- HTTP 200 OK
+- Product ID is 2
+- Product name is "Keyboard"
+- Selling price is 79.99
+- Quantity in stock is 10
+- Low-stock threshold is 3
+
+**Test Result:** 
+Pass
+
+### POST Products — Create Product
+
+**Test:** createProductReturnsCreatedProduct()
+
+**Test Class:** ProductControllerTest.java
+
+**Endpoint:** `POST /products`
+
+**Expected Result:**
+- HTTP 200 OK
+- A product is created and returned in the response
+- Product ID is 3
+- Product name is "Monitor"
+- Selling price is 199.99
+- Quantity in stock is 5
+- Low-stock threshold is 2
+
+**Test Result:**
+Pass
+
+### PUT Product — Update Product
+
+**Test:** updateProductReturnsUpdatedProduct()
+
+**Test Class:** ProductControllerTest.java
+
+**Endpoint:** `PUT /products/{id}`
+
+**Expected Result:**
+- HTTP 200 OK
+- Product ID is 2
+- Product name is "Updated Keyboard"
+- Selling price is 89.99
+- Quantity in stock is 15
+- Low-stock threshold is 4
+
+**Test Result:**
+Pass
+
+### DELETE Product — Delete Product by ID
+
+**Test:** deleteProductReturnsOk()
+
+**Test Class:** ProductControllerTest.java
+
+**Endpoint:** `DELETE /products/{id}`
+
+**Expected Result:**
+- HTTP 200 OK
+- Product ID 2 is passed to the service
+- deleteProduct(2L) is called
+
+**Test Result:**
+Pass
+
+
+### GET Products — Search by Product Name
+
+**Test:** getAllProductsReturnsMatchingProductsForSearch()
+
+**Test Class:** ProductControllerTest.java
+
+**Endpoint:** `GET /products?search={name}`
+
+**Expected Result:**
+- HTTP 200 OK
+- Response contains 1 matching product
+- Product ID is 2
+- Product name is "Keyboard"
+
+**Test Result:**
+Pass
+
+### GET Products — Retrieve Low-Stock Products
+
+**Test:** getAllProductsReturnsLowStockProducts()
+
+**Test Class:** ProductControllerTest.java
+
+**Endpoint:** `GET /products?lowStock=true`
+
+**Expected Result:**
+- HTTP 200 OK
+- Response contains 1 low-stock product
+- Product ID is 2
+- Product name is "Keyboard"
+- Quantity in stock is 2
+- Low-stock threshold is 3
+
+**Test Result:**
+Pass
+
+### GET Inventory Value — Calculate Total Inventory Value
+
+**Test:** getInventoryValueReturnsValue()
+
+**Test Class:** InventoryControllerTest.java
+
+**Endpoint:** `GET /inventory/value`
+
+**Expected Result:**
+- HTTP 200 OK
+- Inventory value is 949.85
+
+**Test Result:**
+Pass
+
+### GET Suppliers — Retrieve All Suppliers
+
+**Test:** getAllSuppliersReturnsSuppliers()
+
+**Test Class:** SupplierControllerTest.java
+
+**Endpoint:** `GET /suppliers`
+
+**Expected Result:**
+- HTTP 200 OK
+- Response contains 2 suppliers
+- Supplier ID is 1
+- Supplier name is "ABC Electronics"
+- Supplier ID is 2
+- Supplier name is "TechSource Distributors"
+
+**Test Result:**
+Pass
+
+### GET Supplier — Retrieve Supplier by ID
+
+**Test:** getSupplierByIdReturnsSupplier()
+
+**Test Class:** SupplierControllerTest.java
+
+**Endpoint:** `GET /suppliers/{id}`
+
+**Expected Result:**
+- HTTP 200 OK
+- Supplier ID is 2
+- Supplier name is "TechSource Distributors"
+- Contact name is "Carlos Martinez"
+- Email is "carlos@techsource.com"
+- Phone is "555-111-2222"
+
+**Test Result:**
+Pass
+
+### POST Supplier — Create Supplier
+
+**Test:** createSupplierReturnsCreatedSupplier()
+
+**Test Class:** SupplierControllerTest.java
+
+**Endpoint:** `POST /suppliers`
+
+**Expected Result:**
+- HTTP 200 OK
+- Supplier ID is 3
+- Supplier name is "New Supplier"
+- Contact name is "John Smith"
+- Email is "john@newsupplier.com"
+- Phone is "555-333-4444"
+
+**Test Result:**
+Pass
+
+### PUT Supplier — Update Supplier
+
+**Test:** updateSupplierReturnsUpdatedSupplier()
+
+**Test Class:** SupplierControllerTest.java
+
+**Endpoint:** `PUT /suppliers/{id}`
+
+**Expected Result:**
+- HTTP 200 OK
+- Supplier ID is 2
+- Supplier name is "Updated TechSource"
+- Contact name is "Carlos Martinez"
+- Email is "updated@techsource.com"
+- Phone is "555-999-8888"
+
+**Test Result:**
+Pass
+
+
+### DELETE Supplier — Delete Supplier
+
+**Test:** deleteSupplierCallsService()
+
+**Test Class:** SupplierControllerTest.java
+
+**Endpoint:** `DELETE /suppliers/{id}`
+
+**Expected Result:**
+- HTTP 200 OK
+- deleteSupplier(2L) is called on the SupplierService
+
+**Test Result:**
+Pass
+
+### POST ProductSupplier — Create ProductSupplier
+
+**Test:** createProductSupplierReturnsCreatedProductSupplier()
+
+**Test Class:** ProductSupplierControllerTest.java
+
+**Endpoint:** `POST /product-suppliers`
+
+**Expected Result:**
+- HTTP 200 OK
+- Product ID is 2
+- Supplier ID is 2
+- Purchase price is 45.00
+
+**Test Result:**
+Pass
+
+
+### GET ProductSupplier — Retrieve All ProductSupplier Relationships
+
+**Test:** getAllProductSuppliersReturnsProductSuppliers()
+
+**Test Class:** ProductSupplierControllerTest.java
+
+**Endpoint:** `GET /product-suppliers`
+
+**Expected Result:**
+- HTTP 200 OK
+- Response contains 1 product-supplier relationship
+- Product ID is 2
+- Supplier ID is 2
+- Purchase price is 45.00
+
+**Test Result:**
+Pass
+
+### GET ProductSupplier — Retrieve ProductSupplier by Product and Supplier
+
+**Test:** getProductSupplierReturnsProductSupplier()
+
+**Test Class:** ProductSupplierControllerTest.java
+
+**Endpoint:** `GET /product-suppliers/{productId}/{supplierId}`
+
+**Expected Result:**
+- HTTP 200 OK
+- Product ID is 2
+- Supplier ID is 2
+- Purchase price is 45.00
+
+**Test Result:**
+Pass
+
+### PUT ProductSupplier — Update ProductSupplier
+
+**Test:** updateProductSupplierReturnsUpdatedProductSupplier()
+
+**Test Class:** ProductSupplierControllerTest.java
+
+**Endpoint:** `PUT /product-suppliers/{productId}/{supplierId}`
+
+**Expected Result:**
+- HTTP 200 OK
+- Product ID is 2
+- Supplier ID is 2
+- Purchase price is updated to 42.00
+
+**Test Result:**
+Pass
+
+### DELETE ProductSupplier — Delete ProductSupplier
+
+**Test:** deleteProductSupplierCallsService()
+
+**Test Class:** ProductSupplierControllerTest.java
+
+**Endpoint:** `DELETE /product-suppliers/{productId}/{supplierId}`
+
+**Expected Result:**
+- HTTP 200 OK
+- deleteProductSupplier() is called on the ProductSupplierService
+
+**Test Result:**
+Pass
+
+### POST Purchase — Create Purchase
+
+**Test:** createPurchaseReturnsCreatedPurchase()
+
+**Test Class:** PurchaseControllerTest.java
+
+**Endpoint:** `POST /purchases`
+
+**Expected Result:**
+- HTTP 200 OK
+- Purchase ID is 1
+- Supplier ID is 2
+- Product ID is 2
+- Quantity is 5
+- Purchase price is 45.00
+
+**Test Result:**
+Pass
+
+### GET Purchases — Retrieve All Purchases
+
+**Test:** getAllPurchasesReturnsPurchases()
+
+**Test Class:** PurchaseControllerTest.java
+
+**Endpoint:** `GET /purchases`
+
+**Expected Result:**
+- HTTP 200 OK
+- Response contains 1 purchase
+- Purchase ID is 1
+- Supplier ID is 2
+- Supplier name is "TechSource Distributors"
+
+**Test Result:**
+Pass
+
+### GET Purchase — Retrieve Purchase by ID
+
+**Test:** getPurchaseReturnsPurchase()
+
+**Test Class:** PurchaseControllerTest.java
+
+**Endpoint:** `GET /purchases/{id}`
+
+**Expected Result:**
+- HTTP 200 OK
+- Purchase ID is 1
+- Supplier ID is 2
+- Supplier name is "TechSource Distributors"
+
+**Test Result:**
+Pass
+
+
