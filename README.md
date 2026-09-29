@@ -3,7 +3,6 @@
 The Inventory Management System will allow a business to manage its
 products and keep track of inventory levels.
 
-
 ## Requirements
 * **Product Management**
     * Add products
@@ -26,26 +25,31 @@ products and keep track of inventory levels.
     * Record purchases
     * View purchase history
 
-
-
+  
 ## Tech Stack
-* **Language:** Java (OpenJDK 26.0.2)
-* **Framework:** Spring Boot
+* **Backend Language:** Java (OpenJDK 26.0.2)
+* **Backend Framework:** Spring Boot
+* **Frontend:** React
+* **Frontend Build Tool:** Vite
+* **Frontend Language:** JavaScript
 * **Database:** MySQL
 * **Architecture:** REST API
 * **Version Control:** Git / GitHub
 * **IDE:** IntelliJ IDEA
 
 
-
 ## Design
 
 ### System Architecture
 
-The application will use a layered architecture:
+The application uses a layered architecture with a React frontend communicating with the Spring Boot REST API:
 
 ```text
-Client
+Browser
+   ↓
+React Frontend
+   ↓ HTTP / JSON
+Spring Boot REST API
    ↓
 Controller
    ↓
@@ -55,18 +59,26 @@ Repository
    ↓
 MySQL Database
 ```
+
+- **React Frontend:** Provides the browser-based user interface and communicates with the backend through HTTP requests.
 - **Controller:** Receives REST API requests and returns responses.
 - **Service:** Handles the application's business logic and rules.
 - **Repository:** Handles communication with the MySQL database.
-- **MySQL Database:** Stores products, suppliers, and inventory data.
+- **MySQL Database:**  Stores products, suppliers, inventory data, and purchase history.
 
-## Database Design
+### Frontend
 
-The database will use a relational structure to manage products, suppliers, supplier pricing, and purchase history.
+The frontend is built with React and Vite and provides the browser-based user interface for the Inventory Management System.
+
+The frontend communicates with the Spring Boot REST API using HTTP requests and JSON responses.
+
+
+### Database Design
+
+The database uses a relational structure to manage products, suppliers, supplier pricing, and purchase history.
 
 
 ### Product
-
 
 Stores information about the products being sold.
 ```text
