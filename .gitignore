@@ -31,3 +31,10 @@ bin/
 ###  Security / Environment Variables ###
 .env
 
+### Maven / Java ###
+target/
+*.iml
+
+### IntelliJ IDEA project files ###
+.idea/
+
