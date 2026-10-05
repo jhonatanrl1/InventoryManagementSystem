@@ -285,6 +285,158 @@ Pass
 
 The validation successfully rejected the invalid product and returned individual validation messages for each field that failed validation. The product was not created. 
 
+### POST Product — Missing quantity in stock
+
+**Endpoint:**
+POST /products
+
+**Test Data:**
+
+```json
+{
+    "name": "Missing Quantity Test",
+    "description": "Testing required quantity validation",
+    "sellingPrice": 25.00,
+    "lowStockThreshold": 3
+}
+```
+
+**Expected Result:**
+The API should reject the request because quantityInStock is required.
+
+**Test Result:**
+Pass
+
+**Observed Response:**
+
+```json
+{
+    "quantityInStock": "must not be null"
+}
+```
+
+**HTTP Status:**
+400 Bad Request
+
+**Notes:**
+
+This test confirms that quantityInStock cannot be omitted from a product request and that Spring Boot validation correctly returns a 400 Bad Request response.
+
+### POST Product — Missing low-stock threshold
+
+**Endpoint:**
+POST /products
+
+**Expected Result:**
+The API should reject the request because lowStockThreshold is required.
+
+**Test Result:**
+Pass
+
+**Request Body:**
+
+```json
+{
+    "name": "Missing Threshold Test",
+    "description": "Testing required threshold validation",
+    "sellingPrice": 25.00,
+    "quantityInStock": 10
+}
+```
+
+**Observed Response:**
+
+```json
+{
+    "lowStockThreshold": "must not be null"
+}
+```
+
+**HTTP Status:**
+400 Bad Request
+
+**Notes:**
+
+This test confirms that lowStockThreshold cannot be omitted from a product request and that Spring Boot validation correctly returns a 400 Bad Request response.
+
+
+### POST Product — Negative quantity in stock
+
+**Endpoint:**
+POST /products
+
+**Expected Result:**
+The API should reject the request because quantityInStock cannot be negative.
+
+**Test Result:**
+Pass
+
+**Request Body:**
+
+```json
+{
+    "name": "Negative Quantity Test",
+    "description": "Testing negative quantity validation",
+    "sellingPrice": 25.00,
+    "quantityInStock": -1,
+    "lowStockThreshold": 3
+}
+```
+
+**Observed Response:**
+
+```json
+{
+    "quantityInStock": "must be greater than or equal to 0"
+}
+```
+
+**HTTP Status:**
+400 Bad Request
+
+**Notes:**
+
+This test confirms that quantityInStock cannot be less than 0 and that the @Min(0) validation rule correctly rejects negative values.
+
+### POST Product — Negative low-stock threshold
+
+**Endpoint:**
+POST /products
+
+**Expected Result:**
+The API should reject the request because lowStockThreshold cannot be negative.
+
+**Test Result:**
+Pass
+
+**Request Body:**
+
+```json
+{
+    "name": "Negative Threshold Test",
+    "description": "Testing negative threshold validation",
+    "sellingPrice": 25.00,
+    "quantityInStock": 10,
+    "lowStockThreshold": -1
+}
+```
+
+**Observed Response:**
+
+```json
+{
+    "lowStockThreshold": "must be greater than or equal to 0"
+}
+```
+
+**HTTP Status:**
+400 Bad Request
+
+**Notes:**
+
+This test confirms that lowStockThreshold cannot be less than 0 and that the @Min(0) validation rule correctly rejects negative values.
+
+
 ### GET Products — Search by Product Name
 
 **Endpoint:** 
@@ -430,6 +582,7 @@ Pass
 **Notes:**
 The Keyboard was excluded because quantityInStock (10) is greater than lowStockThreshold (3).
 
+
 ## GET Inventory — Calculate inventory value
 
 **Endpoint:**  
@@ -484,6 +637,98 @@ The API correctly calculated the inventory value for multiple products.
 ```
 $799.90 + $149.95 = $949.85
 ```
+
+## Frontend Testing
+
+The React frontend was manually tested to verify product form validation
+and successful product creation. These tests confirm that invalid input
+is blocked by the browser and that valid product data is successfully sent
+to the Spring Boot API and stored in MySQL.
+
+### Test 1 — Blank quantity in stock
+
+**Component:**
+React product creation form
+
+**Test Action:**
+Leave the quantityInStock field blank and attempt to create a product.
+
+**Expected Result:**
+The frontend should prevent submission because quantity in stock is required. No product should be created.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The form did not submit.
+* No product was created.
+* DBeaver showed no new product record from this test.
+
+**Notes:**
+
+This test confirms that the React frontend prevents product creation when the required quantity in stock field is blank.
+
+
+### Test 2 — Blank low-stock threshold
+
+**Component:**
+React product creation form
+
+**Test Action:**
+Leave the lowStockThreshold field blank and attempt to create a product.
+
+**Expected Result:**
+The frontend should prevent submission because the low-stock threshold is required. No product should be created.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The form did not submit.
+* No product was created.
+* DBeaver showed no new product record from this test.
+
+**Notes:**
+
+This test confirms that the React frontend prevents product creation when the required low-stock threshold field is blank.
+
+### Test 3 — Create product with valid data
+
+**Component:**
+React product creation form
+
+**Test Data:**
+
+```text
+Name: Validation Success Test
+Description: Testing valid product creation
+Selling Price: 35.00
+Quantity in Stock: 10
+Low-Stock Threshold: 3
+```
+
+**Test Action:**
+Enter valid product information into the React form and submit it.
+
+**Expected Result:**
+The frontend should submit the product to the Spring Boot API. The API should create the product in MySQL and return the saved product information.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The product was created successfully through the React frontend.
+* The product appeared in DBeaver.
+* The product had a quantity in stock of 10 and a low-stock threshold of 3.
+* The product did not meet the low-stock condition because 10 is greater than 3.
+
+**Notes:**
+
+This test confirms that valid product data can travel from the React frontend through the Spring Boot API and be stored in MySQL.
+
 
 ## POST Suppliers — Create Supplier
 

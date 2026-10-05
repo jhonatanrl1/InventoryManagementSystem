@@ -12,6 +12,7 @@ import jakarta.persistence.Column;
 import java.math.BigDecimal;
 
 
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Product {
@@ -31,11 +32,13 @@ public class Product {
     @DecimalMin(value = "0.00")
     private BigDecimal sellingPrice;
 
+    @NotNull
     @Min(0)
-    private int quantityInStock;
+    private Integer quantityInStock;
 
+    @NotNull
     @Min(0)
-    private int lowStockThreshold;
+    private Integer lowStockThreshold;
 
 
     public Product() {
@@ -76,19 +79,20 @@ public class Product {
         this.sellingPrice = sellingPrice;
     }
 
-    public int getQuantityInStock() {
+    public Integer getQuantityInStock() {
         return quantityInStock;
     }
 
-    public void setQuantityInStock(int quantityInStock) {
+    public void setQuantityInStock(Integer quantityInStock) {
         this.quantityInStock = quantityInStock;
     }
 
-    public int getLowStockThreshold() {
+
+    public Integer getLowStockThreshold() {
         return lowStockThreshold;
     }
 
-    public void setLowStockThreshold(int lowStockThreshold) {
+    public void setLowStockThreshold(Integer lowStockThreshold) {
         this.lowStockThreshold = lowStockThreshold;
     }
 
