@@ -1,6 +1,4 @@
-# Testing
-
-## Product API
+# Product Backend Testing
 
 ### GET All Products — Empty Database
 
@@ -555,7 +553,7 @@ This test confirms that products meeting the condition quantityInStock <= lowSto
 
 ---
 
-### Test 2 — Product does not meet low-stock condition
+### Test  — Product does not meet low-stock condition
 
 **Endpoint:**
 GET /products?lowStock=true
@@ -609,7 +607,7 @@ The Keyboard has a selling price of $79.99 and a quantity in stock of 10.
 The API returned the expected total inventory value.
 
 
-### Test 2 — Multiple products
+### Test  — Multiple products
 
 **Endpoint:**  
 GET /inventory/value
@@ -638,12 +636,11 @@ The API correctly calculated the inventory value for multiple products.
 $799.90 + $149.95 = $949.85
 ```
 
-## Frontend Testing
+# Frontend Testing
 
-The React frontend was manually tested to verify product form validation
-and successful product creation. These tests confirm that invalid input
-is blocked by the browser and that valid product data is successfully sent
-to the Spring Boot API and stored in MySQL.
+The React frontend was manually tested to verify product and supplier functionality, including form validation, product creation, product updates, and communication with the Spring Boot API. These tests confirm that valid data is successfully sent from the React frontend through the Spring Boot API and stored in MySQL, while invalid input is blocked by frontend validation.
+
+## Product Frontend Testing
 
 ### Test 1 — Blank quantity in stock
 
@@ -668,7 +665,6 @@ Pass
 **Notes:**
 
 This test confirms that the React frontend prevents product creation when the required quantity in stock field is blank.
-
 
 ### Test 2 — Blank low-stock threshold
 
@@ -713,7 +709,7 @@ Low-Stock Threshold: 3
 Enter valid product information into the React form and submit it.
 
 **Expected Result:**
-The frontend should submit the product to the Spring Boot API. The API should create the product in MySQL and return the saved product information.
+The frontend should submit the product to the Spring Boot API. The API should create the product in MySQL and return the saved product information. The newly created product should automatically appear in the React product list without requiring a manual browser refresh.
 
 **Test Result:**
 Pass
@@ -721,14 +717,282 @@ Pass
 **Verification:**
 
 * The product was created successfully through the React frontend.
+* The newly created product appeared automatically in the React product list.
+* A manual browser refresh was not required.
 * The product appeared in DBeaver.
 * The product had a quantity in stock of 10 and a low-stock threshold of 3.
 * The product did not meet the low-stock condition because 10 is greater than 3.
 
 **Notes:**
 
-This test confirms that valid product data can travel from the React frontend through the Spring Boot API and be stored in MySQL.
+This test confirms that valid product data can travel from the React frontend through the Spring Boot API and be stored in MySQL. It also confirms that the React frontend automatically reloads the product list after successful product creation so the newly created product is displayed without requiring the user to refresh the browser.
 
+
+### Test 4 — Update product price and quantity
+
+**Component:**
+React product edit form
+
+**Test Data:**
+
+```text
+Product: Keyboard
+Product ID: 2
+Selling Price: 80.99 → 81.99
+Quantity in Stock: 9 → 8
+```
+
+**Test Action:**
+Click **Edit** for the Keyboard product, change the selling price and quantity in stock, and click **Update Product**.
+
+**Expected Result:**
+The frontend should send a PUT request to the Spring Boot API. The API should update the product in MySQL. The updated values should appear in the React product list automatically without requiring a manual browser refresh.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The product was successfully updated through the React frontend.
+* The React product list automatically displayed the updated values.
+* A manual browser refresh was not required.
+* DBeaver showed the updated selling price of 81.99.
+* DBeaver showed the updated quantity in stock of 8.
+
+**Notes:**
+
+This test confirms that product updates can travel from the React frontend through the Spring Boot API and be stored in MySQL. It also confirms that the React frontend refreshes the product data automatically after a successful update.
+
+### Test 5 — Update product text fields
+
+**Component:**
+React product edit form
+
+**Test Data:**
+
+```text
+Product: Keyboard
+Name: Keyboard → Updated Keyboard
+Description: Mechanical keyboard → Updated mechanical keyboard
+```
+
+**Test Action:**
+Click **Edit** for the product, change the product name and description, and click **Update Product**.
+
+**Expected Result:**
+The frontend should submit the updated product information to the Spring Boot API. The API should update the product in MySQL.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The product name was successfully updated.
+* The product description was successfully updated.
+* The updated values appeared in the React product list.
+* DBeaver showed the updated product information.
+
+**Notes:**
+
+This test confirms that the React frontend can update the product's text fields through the PUT endpoint.
+
+### Test 6 — Update low-stock threshold
+
+**Component:**
+React product edit form
+
+**Test Data:**
+
+```text
+Product: Updated Keyboard
+Quantity in Stock: 8
+Low-Stock Threshold: 3 → 10
+```
+
+**Test Action:**
+Click **Edit** for the product, change the low-stock threshold from 3 to 10, and click **Update Product**.
+
+**Expected Result:**
+The frontend should submit the updated threshold to the Spring Boot API. The product should become low stock because the quantity in stock is 8 and the low-stock threshold is 10.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The low-stock threshold was successfully updated.
+* The updated value appeared in DBeaver.
+* The product became classified as low stock.
+* The low-stock functionality recognized that 8 is less than or equal to 10.
+
+**Notes:**
+
+This test confirms that changes made through the React edit form affect the product's low-stock status.
+
+### Test 7 — Prevent negative quantity during product update
+
+**Component:**
+React product edit form
+
+**Test Action:**
+Click **Edit** for the product and attempt to change Quantity in Stock from 8 to -1.
+
+**Expected Result:**
+The browser should prevent submission because the quantity in stock field has a minimum value of 0. No invalid update should be sent to the API.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The browser prevented the form from being submitted.
+* The invalid quantity was not sent to the API.
+* The product remained unchanged.
+
+**Notes:**
+
+This test confirms that the React frontend prevents negative quantity values during product updates.
+
+### Test 8 — Prevent negative low-stock threshold during product update
+
+**Component:**
+React product edit form
+
+**Test Action:**
+Click **Edit** for the product and attempt to change Low-Stock Threshold from 10 to -1.
+
+**Expected Result:**
+The browser should prevent submission because the low-stock threshold field has a minimum value of 0. No invalid update should be sent to the API.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The browser prevented the form from being submitted.
+* The invalid threshold was not sent to the API.
+* The product remained unchanged.
+
+**Notes:**
+
+This test confirms that the React frontend prevents negative low-stock threshold values during product updates.
+
+### Test 9 — Cancel product deletion
+
+**Component:**
+React product delete confirmation modal
+
+**Test Data:**
+
+```text
+Product: test
+Description: test description
+Selling Price: 12.00
+Quantity in Stock: 2
+Low-Stock Threshold: 1
+```
+
+**Test Action:**
+Click **Delete** next to the product. When the confirmation modal appears, verify the product name and click **Cancel**.
+
+**Expected Result:**
+The custom confirmation modal should appear and display the correct product name. Clicking **Cancel** should close the modal without deleting the product.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The custom confirmation modal appeared successfully.
+* The product name was displayed correctly in the modal.
+* Clicking **Cancel** closed the modal.
+* The product was not deleted.
+* The product remained available in the React product list.
+
+**Notes:**
+
+This test confirms that the custom confirmation modal protects against accidental product deletion and that selecting **Cancel** does not send a delete request.
+
+### Test 10 — Confirm product deletion
+
+**Component:**
+React product delete confirmation modal
+
+**Test Data:**
+
+```text
+Product: test
+Description: test description
+Selling Price: 12.00
+Quantity in Stock: 2
+Low-Stock Threshold: 1
+```
+
+**Test Action:**
+Click **Delete** next to the product. When the confirmation modal appears, verify the product name and click the **Delete** button inside the modal.
+
+**Expected Result:**
+The custom confirmation modal should appear and display the correct product name. Clicking **Delete** should send a DELETE request to the Spring Boot API. The product should be removed from the React product list without requiring a manual browser refresh, and the confirmation modal should close after the deletion succeeds.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The custom confirmation modal appeared successfully.
+* The product name was displayed correctly in the modal.
+* Clicking **Delete** successfully deleted the product.
+* The product immediately disappeared from the React product list.
+* A manual browser refresh was not required.
+* The confirmation modal closed after the deletion succeeded.
+* DBeaver showed that the product record was deleted from the MySQL `product` table.
+
+**Notes:**
+
+This test confirms the complete product deletion workflow from the React frontend through the Spring Boot API to MySQL. It also confirms that the custom confirmation modal closes after a successful deletion and that the React product list updates automatically.
+
+
+
+## Supplier Frontend Testing
+
+### Test 1 — Create supplier with valid data
+
+**Component:**
+React supplier creation form
+
+**Test Data:**
+
+```text
+Supplier Name: Frontend Test Supplier
+Contact Name: Frontend Test Contact
+Email: frontendtest@example.com
+Phone: 555-333-4444
+```
+
+**Test Action:**
+Enter valid supplier information into the React form and submit it.
+
+**Expected Result:**
+The frontend should submit the supplier information to the Spring Boot API. The API should create the supplier in MySQL and return the saved supplier information.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The supplier was created successfully through the React frontend.
+* The supplier appeared in DBeaver.
+* The supplier information matched the values entered into the React form.
+* No frontend error was displayed after the CORS issue was resolved.
+
+**Notes:**
+
+This test confirms that valid supplier data can travel from the React frontend through the Spring Boot API and be stored in MySQL.
+
+During initial testing, the request was blocked by CORS because the React frontend runs on `http://localhost:5173`. The issue was resolved by adding `@CrossOrigin(origins = "http://localhost:5173")` to `SupplierController.java`.
+
+
+# Supplier Backend Testing
 
 ## POST Suppliers — Create Supplier
 
@@ -892,6 +1156,8 @@ Response Body:  Supplier not found
 
 Supplier ID 1 had been deleted. The API correctly returned 404 Not Found instead of a 500 Internal Server Error.
 
+
+# ProductSupplier Backend Testing
 
 ## POST ProductSupplier — Create Product-Supplier Relationship
 
@@ -1190,6 +1456,7 @@ ProductSupplier not found
 
 The API correctly handled the invalid Product-Supplier relationship using ProductSupplierNotFoundException and returned a 404 Not Found response.
 
+# Purchase Backend Testing
 
 ## POST Purchase
 

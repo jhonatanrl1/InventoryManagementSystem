@@ -70,3 +70,49 @@
 }
 
 
+.delete-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+}
+
+.delete-modal {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.delete-modal h2 {
+  margin-top: 0;
+}
+
+.delete-modal p {
+  margin: 20px 0 30px;
+  line-height: 1.5;
+}
+
+.delete-modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+
+.delete-modal-buttons button {
+  padding: 10px 25px;
+  min-width: 100px;
+  cursor: pointer;
+}
+

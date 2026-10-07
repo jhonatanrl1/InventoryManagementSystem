@@ -17,6 +17,29 @@ function App() {
   const [lowStockThreshold, setLowStockThreshold] = useState("");
 
 
+  const [editingProductId, setEditingProductId] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editSellingPrice, setEditSellingPrice] = useState("");
+  const [editQuantityInStock, setEditQuantityInStock] = useState("");
+  const [editLowStockThreshold, setEditLowStockThreshold] = useState("");
+
+
+
+  const [deleteProductId, setDeleteProductId] = useState(null);
+  const [deleteProductName, setDeleteProductName] = useState("");
+
+
+  const [supplierName, setSupplierName] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
+
+
+
+
+
   useEffect(() => {
     const url = lowStock
       ? "http://localhost:8080/products?lowStock=true"
@@ -75,17 +98,165 @@ function handleAddProduct(event) {
 
       return response.json();
     })
-    .then(() => {
-      setName("");
-      setDescription("");
-      setSellingPrice("");
-      setQuantityInStock("");
-      setLowStockThreshold("");
-      setSearch("");
-      setLowStock(false);
-    })
+
+      .then(() => {
+        setName("");
+        setDescription("");
+        setSellingPrice("");
+        setQuantityInStock("");
+        setLowStockThreshold("");
+        setSearch("");
+        setLowStock(false);
+
+        return fetch("http://localhost:8080/products");
+      })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to reload products");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        setProducts(data);
+      })
+
+
     .catch(() => {
       setError("Unable to add product. Check the information and try again.");
+    });
+}
+
+
+function handleEditProduct(product) {
+  setEditingProductId(product.productId);
+  setEditName(product.name);
+  setEditDescription(product.description || "");
+  setEditSellingPrice(product.sellingPrice);
+  setEditQuantityInStock(product.quantityInStock);
+  setEditLowStockThreshold(product.lowStockThreshold);
+}
+
+
+function handleUpdateProduct(event) {
+  event.preventDefault();
+
+  fetch(`http://localhost:8080/products/${editingProductId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: editName,
+      description: editDescription,
+      sellingPrice: Number(editSellingPrice),
+      quantityInStock: Number(editQuantityInStock),
+      lowStockThreshold: Number(editLowStockThreshold),
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to update product");
+      }
+      return response.json();
+    })
+
+
+
+    .then(() => {
+      setEditingProductId(null);
+      setEditName("");
+      setEditDescription("");
+      setEditSellingPrice("");
+      setEditQuantityInStock("");
+      setEditLowStockThreshold("");
+
+      return fetch("http://localhost:8080/products");
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to reload products");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setProducts(data);
+    })
+
+
+    .catch(() => {
+      setError("Unable to update product. Check the information and try again.");
+    });
+}
+
+
+
+
+
+function handleDeleteProduct(productId) {
+  fetch(`http://localhost:8080/products/${productId}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to delete product");
+      }
+
+      return fetch("http://localhost:8080/products");
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to reload products");
+      }
+
+      return response.json();
+    })
+
+    .then((data) => {
+      setProducts(data);
+      setDeleteProductId(null);
+      setDeleteProductName("");
+    })
+
+    .catch(() => {
+      setError("Unable to delete product.");
+    });
+}
+
+
+
+
+
+function handleAddSupplier(event) {
+  event.preventDefault();
+
+  fetch("http://localhost:8080/suppliers", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: supplierName,
+      contactName: contactName,
+      email: email,
+      phone: phone,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to add supplier");
+      }
+
+      return response.json();
+    })
+    .then(() => {
+      setSupplierName("");
+      setContactName("");
+      setEmail("");
+      setPhone("");
+    })
+    .catch(() => {
+      setError("Unable to add supplier. Check the information and try again.");
     });
 }
 
@@ -156,6 +327,49 @@ function handleAddProduct(event) {
 
         </form>
 
+
+
+        <h2>Add Supplier</h2>
+
+        <form onSubmit={handleAddSupplier}>
+          <input
+            type="text"
+            placeholder="Supplier name"
+            value={supplierName}
+            onChange={(event) => setSupplierName(event.target.value)}
+            required
+          />
+
+          <input
+            type="text"
+            placeholder="Contact name"
+            value={contactName}
+            onChange={(event) => setContactName(event.target.value)}
+            required
+          />
+
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            required
+          />
+
+          <input
+            type="text"
+            placeholder="Phone"
+            value={phone}
+            onChange={(event) => setPhone(event.target.value)}
+            required
+          />
+
+          <button type="submit">Add Supplier</button>
+        </form>
+
+
+
+
       <h2>Products</h2>
 
       {inventoryValue !== null && (
@@ -191,15 +405,142 @@ function handleAddProduct(event) {
 
 
          products.map((product) => (
+
+
+
            <div className="product-card" key={product.productId}>
-             <h3>{product.name}</h3>
-             <p>{product.description}</p>
-             <p>Price: ${product.sellingPrice}</p>
-             <p>Quantity in stock: {product.quantityInStock}</p>
+             {editingProductId === product.productId ? (
+               <form onSubmit={handleUpdateProduct}>
+                 <label>
+                   Product Name
+                   <input
+                     type="text"
+                     value={editName}
+                     onChange={(event) => setEditName(event.target.value)}
+                     required
+                   />
+                 </label>
+
+                 <label>
+                   Description
+                   <input
+                     type="text"
+                     value={editDescription}
+                     onChange={(event) => setEditDescription(event.target.value)}
+                   />
+                 </label>
+
+                 <label>
+                   Selling Price
+                   <input
+                     type="number"
+                     value={editSellingPrice}
+                     onChange={(event) => setEditSellingPrice(event.target.value)}
+                     min="0"
+                     step="0.01"
+                     required
+                   />
+                 </label>
+
+                 <label>
+                   Quantity in Stock
+                   <input
+                     type="number"
+                     value={editQuantityInStock}
+                     onChange={(event) => setEditQuantityInStock(event.target.value)}
+                     min="0"
+                     required
+                   />
+                 </label>
+
+                 <label>
+                   Low-Stock Threshold
+                   <input
+                     type="number"
+                     value={editLowStockThreshold}
+                     onChange={(event) => setEditLowStockThreshold(event.target.value)}
+                     min="0"
+                     required
+                   />
+                 </label>
+
+                 <button type="submit">Update Product</button>
+
+                 <button
+                   type="button"
+                   onClick={() => setEditingProductId(null)}
+                 >
+                   Cancel
+                 </button>
+               </form>
+             ) : (
+               <>
+                 <h3>{product.name}</h3>
+                 <p>{product.description}</p>
+                 <p>Price: ${product.sellingPrice}</p>
+                 <p>Quantity in stock: {product.quantityInStock}</p>
+
+                 <button onClick={() => handleEditProduct(product)}>
+                   Edit
+                 </button>
+
+
+                 <button
+                   onClick={() => {
+                     setDeleteProductId(product.productId);
+                     setDeleteProductName(product.name);
+                   }}
+                 >
+                   Delete
+                 </button>
+
+
+               </>
+             )}
            </div>
+
+
+
          ))
        )}
      </div>
+
+
+
+{/* DELETE MODAL */}
+    {deleteProductId !== null && (
+      <div className="delete-modal-overlay">
+        <div className="delete-modal">
+          <h2>Delete Product</h2>
+
+          <p>
+  Are you sure you want to delete the product "{deleteProductName}"?
+          </p>
+
+          <div className="delete-modal-buttons">
+            <button
+              type="button"
+              onClick={() => {
+                setDeleteProductId(null);
+                setDeleteProductName("");
+              }}
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleDeleteProduct(deleteProductId)}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+
+
 
 
     </div>
