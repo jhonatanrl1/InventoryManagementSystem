@@ -35,7 +35,22 @@ function App() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
+  const [supplierError, setSupplierError] = useState("");
 
+  const [suppliers, setSuppliers] = useState([]);
+  const [showSuppliers, setShowSuppliers] = useState(false);
+
+
+  const [editingSupplierId, setEditingSupplierId] = useState(null);
+  const [editSupplierName, setEditSupplierName] = useState("");
+  const [editContactName, setEditContactName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+
+
+
+const [deleteSupplierId, setDeleteSupplierId] = useState(null);
+const [deleteSupplierName, setDeleteSupplierName] = useState("");
 
 
 
@@ -65,6 +80,34 @@ function App() {
           setLoading(false);
         });
   }, [search, lowStock]);
+
+
+
+
+  useEffect(() => {
+    if (!showSuppliers) {
+      return;
+    }
+
+    fetch("http://localhost:8080/suppliers")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load suppliers");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        setSuppliers(data);
+      })
+      .catch(() => {
+        setSupplierError("Unable to load suppliers.");
+      });
+  }, [showSuppliers]);
+
+
+
+
 
 
 useEffect(() => {
@@ -226,11 +269,22 @@ function handleDeleteProduct(productId) {
 
 
 
-
 function handleAddSupplier(event) {
   event.preventDefault();
 
+  setSupplierError("");
+
+  const phoneDigits = phone.replace(/\D/g, "");
+
+  if (phoneDigits.length < 7) {
+    setSupplierError("Please enter a valid phone number.");
+    return;
+  }
+
+
+
   fetch("http://localhost:8080/suppliers", {
+
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -249,16 +303,134 @@ function handleAddSupplier(event) {
 
       return response.json();
     })
+
+
     .then(() => {
       setSupplierName("");
       setContactName("");
       setEmail("");
       setPhone("");
+      setSupplierError("");
+
+      return fetch("http://localhost:8080/suppliers");
     })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to reload suppliers");
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      setSuppliers(data);
+    })
+
+
+
     .catch(() => {
       setError("Unable to add supplier. Check the information and try again.");
     });
 }
+
+
+
+    function handleUpdateSupplier(event) {
+      event.preventDefault();
+
+      setSupplierError("");
+
+      const phoneDigits = editPhone.replace(/\D/g, "");
+
+      if (phoneDigits.length < 7) {
+        setSupplierError("Please enter a valid phone number.");
+        return;
+      }
+
+      fetch(`http://localhost:8080/suppliers/${editingSupplierId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: editSupplierName,
+          contactName: editContactName,
+          email: editEmail,
+          phone: editPhone,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to update supplier");
+          }
+
+          return response.json();
+        })
+        .then(() => {
+          setEditingSupplierId(null);
+          setEditSupplierName("");
+          setEditContactName("");
+          setEditEmail("");
+          setEditPhone("");
+          setSupplierError("");
+
+          return fetch("http://localhost:8080/suppliers");
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to reload suppliers");
+          }
+
+          return response.json();
+        })
+        .then((data) => {
+          setSuppliers(data);
+        })
+        .catch(() => {
+          setSupplierError(
+            "Unable to update supplier. Check the information and try again."
+          );
+        });
+    }
+
+
+
+
+     function handleDeleteSupplier(supplierId) {
+        setSupplierError("");
+
+        fetch(`http://localhost:8080/suppliers/${supplierId}`, {
+          method: "DELETE",
+        })
+          .then(async (response) => {
+            if (!response.ok) {
+              const message = await response.text();
+
+              throw new Error(
+                message || "Unable to delete supplier."
+              );
+            }
+
+            return fetch("http://localhost:8080/suppliers");
+          })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to reload suppliers.");
+            }
+
+            return response.json();
+          })
+          .then((data) => {
+            setSuppliers(data);
+            setDeleteSupplierId(null);
+            setDeleteSupplierName("");
+            setSupplierError("");
+          })
+          .catch((error) => {
+            setSupplierError(error.message);
+            setDeleteSupplierId(null);
+            setDeleteSupplierName("");
+          });
+      }
 
 
 
@@ -270,9 +442,29 @@ function handleAddSupplier(event) {
       <h1>Inventory Management System</h1>
 
 
-    <h2>Add Product</h2>
+      <div className="view-toggle">
+        <button
+          type="button"
+          onClick={() => setShowSuppliers(false)}
+        >
+          Products
+        </button>
 
-    <form onSubmit={handleAddProduct}>
+        <button
+          type="button"
+          onClick={() => setShowSuppliers(true)}
+        >
+          Suppliers
+        </button>
+      </div>
+
+
+    {!showSuppliers && (
+      <h2>Add Product</h2>
+    )}
+
+    {!showSuppliers && (
+      <form onSubmit={handleAddProduct}>
       <input
         type="text"
         placeholder="Product name"
@@ -327,8 +519,11 @@ function handleAddSupplier(event) {
 
         </form>
 
+        )}
 
 
+        {showSuppliers && (
+          <>
         <h2>Add Supplier</h2>
 
         <form onSubmit={handleAddSupplier}>
@@ -356,20 +551,162 @@ function handleAddSupplier(event) {
             required
           />
 
-          <input
-            type="text"
-            placeholder="Phone"
-            value={phone}
-            onChange={(event) => setPhone(event.target.value)}
-            required
-          />
+        <input
+          type="tel"
+          placeholder="Phone"
+          value={phone}
+          onChange={(event) => setPhone(event.target.value)}
+          title="Enter a valid phone number."
+          required
+        />
+
+
 
           <button type="submit">Add Supplier</button>
+
+
         </form>
 
 
+         {supplierError && (
+           <p className="supplier-error">{supplierError}</p>
+         )}
 
 
+
+
+    <h2>Suppliers</h2>
+
+    <div className="supplier-list">
+      {suppliers.length === 0 ? (
+        <p>No suppliers found.</p>
+      ) : (
+        suppliers.map((supplier) => (
+          <div className="supplier-card" key={supplier.supplierId}>
+            {editingSupplierId === supplier.supplierId ? (
+              <form onSubmit={handleUpdateSupplier}>
+                <h3>Edit Supplier</h3>
+
+                <label>
+                  Supplier Name:
+                  <input
+                    type="text"
+                    value={editSupplierName}
+                    onChange={(event) =>
+                      setEditSupplierName(event.target.value)
+                    }
+                    required
+                  />
+                </label>
+
+                <label>
+                  Contact Name:
+                  <input
+                    type="text"
+                    value={editContactName}
+                    onChange={(event) =>
+                      setEditContactName(event.target.value)
+                    }
+                    required
+                  />
+                </label>
+
+                <label>
+                  Email:
+                  <input
+                    type="email"
+                    value={editEmail}
+                    onChange={(event) => setEditEmail(event.target.value)}
+                    required
+                  />
+                </label>
+
+                <label>
+                  Phone:
+                  <input
+                    type="tel"
+                    value={editPhone}
+                    onChange={(event) => setEditPhone(event.target.value)}
+                    required
+                  />
+                </label>
+
+                {supplierError && (
+                  <p className="supplier-error">{supplierError}</p>
+                )}
+
+                <button type="submit">Update Supplier</button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingSupplierId(null);
+                    setEditSupplierName("");
+                    setEditContactName("");
+                    setEditEmail("");
+                    setEditPhone("");
+                    setSupplierError("");
+                  }}
+                >
+                  Cancel
+                </button>
+              </form>
+            ) : (
+              <>
+                <h3>{supplier.name}</h3>
+                <p>Contact: {supplier.contactName}</p>
+                <p>Email: {supplier.email}</p>
+                <p>Phone: {supplier.phone}</p>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingSupplierId(supplier.supplierId);
+                    setEditSupplierName(supplier.name);
+                    setEditContactName(supplier.contactName);
+                    setEditEmail(supplier.email);
+                    setEditPhone(supplier.phone);
+                    setSupplierError("");
+                  }}
+                >
+                  Edit
+                </button>
+
+
+                <button
+                     type="button"
+                     onClick={() => {
+                         setDeleteSupplierId(supplier.supplierId);
+                         setDeleteSupplierName(supplier.name);
+                         setSupplierError("");
+                                  }}
+                                >
+                                  Delete
+                                </button>
+
+
+
+
+              </>
+            )}
+          </div>
+        ))
+      )}
+    </div>
+
+
+
+
+
+
+
+
+    </>
+    )}
+
+
+    {!showSuppliers && (
+      <>
       <h2>Products</h2>
 
       {inventoryValue !== null && (
@@ -539,6 +876,52 @@ function handleAddSupplier(event) {
       </div>
     )}
 
+
+
+
+
+
+
+
+
+
+      </>
+    )}
+
+
+
+    {/* SUPPLIER DELETE MODAL */}
+    {deleteSupplierId !== null && (
+      <div className="delete-modal-overlay">
+        <div className="delete-modal">
+          <h2>Delete Supplier</h2>
+
+          <p>
+            Are you sure you want to delete the supplier "{deleteSupplierName}"?
+          </p>
+
+          <div className="delete-modal-buttons">
+            <button
+              type="button"
+              onClick={() => {
+                setDeleteSupplierId(null);
+                setDeleteSupplierName("");
+                setSupplierError("");
+              }}
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleDeleteSupplier(deleteSupplierId)}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
 
 
 

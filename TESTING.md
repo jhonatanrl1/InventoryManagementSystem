@@ -1378,9 +1378,9 @@ Pass
 
 This test confirms that the React frontend automatically reloads the supplier list after successful creation. It verifies the complete workflow from the supplier form through the Spring Boot API to MySQL and back to the updated React supplier list.
 
-### Supplier Editing Tests
 
-#### Test 13 — Open and Cancel Supplier Editing
+
+### Test 13 — Open and Cancel Supplier Editing
 
 **SETUP →** Navigate to the Suppliers view and locate an existing supplier.
 
@@ -1390,7 +1390,7 @@ This test confirms that the React frontend automatically reloads the supplier li
 
 **Result:** Pass
 
-#### Test 14 — Update Supplier Contact Name
+### Test 14 — Update Supplier Contact Name
 
 **SETUP →** Select `Auto Refresh Supplier` for editing.
 
@@ -1400,7 +1400,7 @@ This test confirms that the React frontend automatically reloads the supplier li
 
 **Result:** Pass
 
-#### Test 15 — Update Multiple Supplier Fields
+### Test 15 — Update Multiple Supplier Fields
 
 **SETUP →** Open `Auto Refresh Supplier` in edit mode.
 
@@ -1410,7 +1410,7 @@ This test confirms that the React frontend automatically reloads the supplier li
 
 **Result:** Pass
 
-#### Test 16 — Cancel Unsaved Supplier Changes
+### Test 16 — Cancel Unsaved Supplier Changes
 
 **SETUP →** Open `Updated Auto Refresh Supplier` in edit mode.
 
@@ -1420,7 +1420,7 @@ This test confirms that the React frontend automatically reloads the supplier li
 
 **Result:** pass
 
-#### Test 17 — Reject an Invalid Phone Number During Editing
+### Test 17 — Reject an Invalid Phone Number During Editing
 
 **SETUP →** Open `Updated Auto Refresh Supplier` in edit mode.
 
@@ -1430,7 +1430,7 @@ This test confirms that the React frontend automatically reloads the supplier li
 
 **Result:** pass
 
-#### Test 18 — Reject an Invalid Email During Editing
+### Test 18 — Reject an Invalid Email During Editing
 
 **SETUP →** Open `Updated Auto Refresh Supplier` in edit mode.
 
@@ -1440,7 +1440,7 @@ This test confirms that the React frontend automatically reloads the supplier li
 
 **Result:** pass
 
-#### Test 19 — Preserve Supplier ID During Editing
+### Test 19 — Preserve Supplier ID During Editing
 
 **SETUP →** Record the existing ID of `Updated Auto Refresh Supplier`.
 
@@ -1449,6 +1449,21 @@ This test confirms that the React frontend automatically reloads the supplier li
 **VERIFICATION →** The contact name is updated in the frontend and MySQL, the original supplier ID remains unchanged, and no duplicate supplier is created.
 
 **Result:** Pass
+
+
+### Test 20 — Delete Supplier with Product Associations
+
+- **Setup:** Supplier #2 (TechSource Distributors) is associated with Product #2 in the `product_supplier` table.
+- **Action:** Click Delete on TechSource Distributors and confirm the deletion.
+- **Expected Result:** The API rejects the request with HTTP `409 Conflict`. The frontend displays the error message: `Cannot delete supplier because it is associated with products. Remove the product associations first.`
+- **Actual Result:** Passed. The error message appeared, and the supplier remained in the database.
+
+### Test 21 — Delete Supplier without Associations or Purchase History
+
+- **Setup:** Create a temporary supplier with no product associations or purchase history.
+- **Action:** Click Delete and confirm the deletion.
+- **Expected Result:** The API deletes the supplier successfully. The supplier disappears from the frontend list and is removed from the database.
+- **Actual Result:** Passed. The temporary supplier disappeared from the frontend and was removed from the database.
 
 
 

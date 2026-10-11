@@ -13,26 +13,31 @@
   margin-bottom: 25px;
 }
 
-.product-list {
+.product-list, .supplier-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 20px;
 }
 
-.product-card {
+.product-card, .supplier-card {
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
   background: #ffffff;
 }
 
-.product-card h3 {
+
+.product-card h3,
+.supplier-card h3 {
   margin-top: 0;
 }
 
-.product-card p {
+.product-card p,
+.supplier-card p {
   margin: 8px 0;
 }
+
+
 
 .app input {
   width: 100%;
@@ -114,5 +119,10 @@
   padding: 10px 25px;
   min-width: 100px;
   cursor: pointer;
+}
+
+.supplier-error {
+  margin-top: 15px;
+  margin-bottom: 100px;
 }
 
