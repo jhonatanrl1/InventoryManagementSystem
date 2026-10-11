@@ -6,5 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProductSupplierRepository extends JpaRepository<ProductSupplier, ProductSupplierId> {
 
+
+    boolean existsBySupplier_SupplierId(Long supplierId);
+
+
 }
 

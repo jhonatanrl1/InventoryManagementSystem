@@ -992,6 +992,466 @@ This test confirms that valid supplier data can travel from the React frontend t
 During initial testing, the request was blocked by CORS because the React frontend runs on `http://localhost:5173`. The issue was resolved by adding `@CrossOrigin(origins = "http://localhost:5173")` to `SupplierController.java`.
 
 
+### Test 2 — Prevent supplier creation with missing supplier name
+
+**Component:**
+React supplier creation form
+
+**Test Data:**
+
+```text
+Supplier Name: [leave blank]
+Contact Name: Frontend Validation Contact
+Email: validation@example.com
+Phone: 555-444-5555
+```
+
+**Test Action:**
+Leave the Supplier Name field blank, enter the remaining supplier information, and click **Add Supplier**.
+
+**Expected Result:**
+The browser should prevent the form from being submitted because the Supplier Name field is required. No supplier should be created through the Spring Boot API or stored in MySQL.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The browser prevented the form from being submitted.
+* A required-field validation message was displayed for Supplier Name.
+* No new supplier was created.
+* DBeaver confirmed that no new supplier record was added to the MySQL `supplier` table.
+
+**Notes:**
+
+This test confirms that the React supplier creation form prevents submission when the required Supplier Name field is missing.
+
+### Test 3 — Prevent supplier creation with missing contact name
+
+**Component:**
+React supplier creation form
+
+**Test Data:**
+
+```text
+Supplier Name: Frontend Validation Supplier
+Contact Name: [leave blank]
+Email: validation2@example.com
+Phone: 555-444-5556
+```
+
+**Test Action:**
+Enter the supplier information while leaving the Contact Name field blank, then click **Add Supplier**.
+
+**Expected Result:**
+The browser should prevent the form from being submitted because the Contact Name field is required. No supplier should be created through the Spring Boot API or stored in MySQL.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The browser prevented the form from being submitted.
+* A required-field validation message was displayed for Contact Name.
+* No supplier was created.
+* DBeaver confirmed that no new supplier record was added to the MySQL `supplier` table.
+
+**Notes:**
+
+This test confirms that the React supplier creation form prevents submission when the required Contact Name field is missing.
+
+### Test 4 — Prevent supplier creation with missing email
+
+**Component:**
+React supplier creation form
+
+**Test Data:**
+
+```text id="q4k7ny"
+Supplier Name: Frontend Validation Supplier
+Contact Name: Frontend Validation Contact
+Email: [leave blank]
+Phone: 555-444-5557
+```
+
+**Test Action:**
+Enter the supplier information while leaving the Email field blank, then click **Add Supplier**.
+
+**Expected Result:**
+The browser should prevent the form from being submitted because the Email field is required. No supplier should be created through the Spring Boot API or stored in MySQL.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The browser prevented the form from being submitted.
+* A required-field validation message was displayed for Email.
+* No supplier was created.
+* DBeaver confirmed that no new supplier record was added to the MySQL `supplier` table.
+
+**Notes:**
+
+This test confirms that the React supplier creation form prevents submission when the required Email field is missing.
+
+### Test 5 — Prevent supplier creation with missing phone
+
+**Component:**
+React supplier creation form
+
+**Test Data:**
+
+```text
+Supplier Name: Frontend Validation Supplier
+Contact Name: Frontend Validation Contact
+Email: validation3@example.com
+Phone: [leave blank]
+```
+
+**Test Action:**
+Enter the supplier information while leaving the Phone field blank, then click **Add Supplier**.
+
+**Expected Result:**
+The browser should prevent the form from being submitted because the Phone field is required. No supplier should be created through the Spring Boot API or stored in MySQL.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The browser prevented the form from being submitted.
+* A required-field validation message was displayed for Phone.
+* No supplier was created.
+* DBeaver confirmed that no new supplier record was added to the MySQL `supplier` table.
+
+**Notes:**
+
+This test confirms that the React supplier creation form prevents submission when the required Phone field is missing.
+
+### Test 6 — Prevent supplier creation with invalid email format
+
+**Component:**
+React supplier creation form
+
+**Test Data:**
+
+```text
+Supplier Name: Email Validation Supplier
+Contact Name: Email Validation Contact
+Email: validation.example.com
+Phone: 555-555-5555
+```
+
+**Test Action:**
+Enter the supplier information using an invalid email format that does not contain an `@` symbol, then click **Add Supplier**.
+
+**Expected Result:**
+The browser should prevent the form from being submitted because the Email field contains an invalid email format. No supplier should be created through the Spring Boot API or stored in MySQL.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The browser prevented the form from being submitted.
+* An email-format validation message was displayed.
+* No supplier was created.
+* DBeaver confirmed that no new supplier record was added to the MySQL `supplier` table.
+
+**Notes:**
+
+This test confirms that the React supplier creation form uses the HTML email input validation to prevent submission when an invalid email format is entered.
+
+
+### Test 7 — Create supplier with valid email format
+
+**Component:**
+React supplier creation form
+
+**Test Data:**
+
+```text id="4zq8hc"
+Supplier Name: Email Validation Supplier
+Contact Name: Email Validation Contact
+Email: validation@example.com
+Phone: 555-555-5555
+```
+
+**Test Action:**
+Enter the supplier information using a valid email format and click **Add Supplier**.
+
+**Expected Result:**
+The browser should allow the form to be submitted. The supplier should be created successfully through the Spring Boot API and stored in MySQL.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The browser allowed the form to be submitted.
+* The supplier was created successfully.
+* DBeaver confirmed that the supplier was stored in the MySQL `supplier` table.
+* The stored email matched `validation@example.com`.
+
+**Notes:**
+
+This test confirms that the React supplier creation form accepts a valid email format and successfully sends the supplier information to the Spring Boot API for storage in MySQL.
+
+
+
+### Test 8 — Create supplier with valid phone number
+
+**Component:**
+React supplier creation form
+
+**Test Data:**
+
+```text
+Supplier Name: Phone Validation Supplier
+Contact Name: Phone Validation Contact
+Email: phonevalidation@example.com
+Phone: 555-555-5555
+```
+
+**Test Action:**
+Enter valid supplier information into the React form using a standard phone number and click **Add Supplier**.
+
+**Expected Result:**
+The React frontend should accept the valid phone number and submit the supplier information to the Spring Boot API. The API should create the supplier in MySQL without displaying a frontend error.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* React allowed the supplier form to be submitted.
+* The supplier was created successfully.
+* No frontend error was displayed.
+* DBeaver showed the `Phone Validation Supplier` record.
+* The supplier information was stored correctly in MySQL.
+* The phone number `555-555-5555` was stored correctly.
+
+**Notes:**
+
+The valid phone number was accepted successfully, confirming that the new validation does not prevent valid phone numbers from being submitted.
+
+
+### Test 9 — Reject invalid phone input
+
+**Component:**
+React supplier creation form
+
+**Test Data:**
+
+```text
+Supplier Name: Invalid Phone Supplier
+Contact Name: Invalid Phone Contact
+Email: invalidphone@example.com
+Phone: ABCDEFG
+```
+
+**Test Action:**
+Enter the supplier information into the React form using an invalid phone value containing letters and click **Add Supplier**.
+
+**Expected Result:**
+The React frontend should reject the invalid phone input and prevent the supplier from being submitted to the Spring Boot API. The message **`Please enter a valid phone number.`** should appear underneath the Supplier form. The Product list should remain visible and should not be replaced by the Supplier validation message.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* React prevented the supplier form from being submitted.
+* The message **`Please enter a valid phone number.`** appeared underneath the Supplier form.
+* The Product list remained visible.
+* No new supplier was created in MySQL.
+* DBeaver confirmed that no `Invalid Phone Supplier` record was created.
+
+**Notes:**
+
+This test confirms that the React frontend validates supplier phone input before sending the request to the Spring Boot API. The validation rejects phone input that contains fewer than seven numeric digits. The Supplier validation error is displayed separately from the Product error state so that the Product list remains visible when Supplier validation fails.
+
+### Test 10 — Reject phone number with fewer than seven digits
+
+**Component:**
+React supplier creation form
+
+**Test Data:**
+
+```text
+Supplier Name: Short Phone Supplier
+Contact Name: Short Phone Contact
+Email: shortphone@example.com
+Phone: 123456
+```
+
+**Test Action:**
+Enter the supplier information into the React form using a phone number containing six digits and click **Add Supplier**.
+
+**Expected Result:**
+The React frontend should reject the phone number because it contains fewer than seven numeric digits. The message **`Please enter a valid phone number.`** should appear underneath the Supplier form. The Product list should remain visible, and the supplier should not be submitted to the Spring Boot API.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* React prevented the supplier form from being submitted.
+* The message **`Please enter a valid phone number.`** appeared underneath the Supplier form.
+* The Product list remained visible.
+* No POST request was sent to the Spring Boot API.
+* DBeaver confirmed that no `Short Phone Supplier` record was created in MySQL.
+
+**Notes:**
+
+This test confirms that the React phone validation rejects phone numbers containing fewer than seven numeric digits before the request reaches the Spring Boot API.
+
+### Test 11 — Accept phone number with exactly seven digits
+
+**Component:**
+React supplier creation form
+
+**Test Data:**
+
+```text
+Supplier Name: Boundary Phone Supplier
+Contact Name: Boundary Phone Contact
+Email: boundaryphone@example.com
+Phone: 1234567
+```
+
+**Test Action:**
+Enter the supplier information into the React form using a phone number containing exactly seven numeric digits and click **Add Supplier**.
+
+**Expected Result:**
+The React frontend should accept the phone number because it contains the minimum required seven numeric digits. The supplier should be submitted to the Spring Boot API and created in MySQL.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* React allowed the supplier form to be submitted.
+* The supplier was created successfully.
+* DBeaver showed the `Boundary Phone Supplier` record.
+* The supplier information was stored correctly in MySQL.
+* The phone number `1234567` was stored successfully.
+
+**Notes:**
+
+This test verifies the minimum valid boundary for the React phone validation. Phone numbers containing fewer than seven numeric digits are rejected, while a phone number containing exactly seven numeric digits is accepted.
+
+
+### Test 12 — Create supplier and automatically refresh the list
+
+**Component:**
+React supplier creation form and supplier list
+
+**Test Data:**
+
+```text
+Supplier Name: Auto Refresh Supplier
+Contact Name: Auto Refresh Contact
+Email: autorefresh@example.com
+Phone: 555-222-3333
+```
+
+**Test Action:**
+Open the Suppliers view, enter the supplier information into the React form, and click **Add Supplier**.
+
+**Expected Result:**
+The frontend should submit the supplier information to the Spring Boot API. After the supplier is successfully created in MySQL, the form should clear and the supplier list should automatically refresh to display the new supplier without requiring a manual browser refresh or switching views.
+
+**Test Result:**
+Pass
+
+**Verification:**
+
+* The supplier was created successfully through the React frontend.
+* The Supplier form cleared after successful creation.
+* The new `Auto Refresh Supplier` card appeared automatically.
+* A manual browser refresh was not required.
+* Switching views was not required to see the new supplier.
+* DBeaver confirmed that the supplier was stored in MySQL with the correct information.
+
+**Notes:**
+
+This test confirms that the React frontend automatically reloads the supplier list after successful creation. It verifies the complete workflow from the supplier form through the Spring Boot API to MySQL and back to the updated React supplier list.
+
+### Supplier Editing Tests
+
+#### Test 13 — Open and Cancel Supplier Editing
+
+**SETUP →** Navigate to the Suppliers view and locate an existing supplier.
+
+**ACTION →** Click Edit, verify that the form contains the supplier's current information, and click Cancel.
+
+**VERIFICATION →** The edit form closes, the supplier details reappear, and other supplier cards remain visible.
+
+**Result:** Pass
+
+#### Test 14 — Update Supplier Contact Name
+
+**SETUP →** Select `Auto Refresh Supplier` for editing.
+
+**ACTION →** Change the contact name to `Updated Test Contact` and click Update Supplier.
+
+**VERIFICATION →** The updated contact name appears in the supplier card and is persisted in MySQL.
+
+**Result:** Pass
+
+#### Test 15 — Update Multiple Supplier Fields
+
+**SETUP →** Open `Auto Refresh Supplier` in edit mode.
+
+**ACTION →** Update the supplier name to `Updated Auto Refresh Supplier`, the email to `updatedsupplier@example.com`, and the phone to `555-444-3333`. Keep the contact name as `Updated Test Contact`, then click Update Supplier.
+
+**VERIFICATION →** All updated values appear in the supplier card and are persisted in MySQL without errors.
+
+**Result:** Pass
+
+#### Test 16 — Cancel Unsaved Supplier Changes
+
+**SETUP →** Open `Updated Auto Refresh Supplier` in edit mode.
+
+**ACTION →** Change the supplier name to `Cancel Test Supplier` and the contact name to `Cancel Test Contact`, then click Cancel without submitting the form.
+
+**VERIFICATION →** The original supplier name and contact name remain unchanged in the frontend and MySQL.
+
+**Result:** pass
+
+#### Test 17 — Reject an Invalid Phone Number During Editing
+
+**SETUP →** Open `Updated Auto Refresh Supplier` in edit mode.
+
+**ACTION →** Enter `123456` in the Phone field and click Update Supplier.
+
+**VERIFICATION →** The update is rejected, the message `Please enter a valid phone number.` appears, the edit form remains open, and the existing phone number in MySQL remains unchanged.
+
+**Result:** pass
+
+#### Test 18 — Reject an Invalid Email During Editing
+
+**SETUP →** Open `Updated Auto Refresh Supplier` in edit mode.
+
+**ACTION →** Enter `invalid-email` in the Email field and click Update Supplier.
+
+**VERIFICATION →** Browser email validation prevents submission, displays a validation message, keeps the edit form open, and leaves the existing email in MySQL unchanged.
+
+**Result:** pass
+
+#### Test 19 — Preserve Supplier ID During Editing
+
+**SETUP →** Record the existing ID of `Updated Auto Refresh Supplier`.
+
+**ACTION →** Change the contact name to `Final Test Contact` and click Update Supplier.
+
+**VERIFICATION →** The contact name is updated in the frontend and MySQL, the original supplier ID remains unchanged, and no duplicate supplier is created.
+
+**Result:** Pass
+
+
+
 # Supplier Backend Testing
 
 ## POST Suppliers — Create Supplier
@@ -1867,8 +2327,16 @@ The API correctly detected that Product ID 999 does not exist and returned a 404
 ✅ getAllSuppliersReturnsAllSuppliers()
 - Verifies that all suppliers are returned by the service.
 
-✅ deleteSupplierRemovesSupplier()
-- Verifies that an existing supplier is deleted by the service.
+✅ deleteSupplierRemovesSupplierWhenNoAssociationsOrPurchaseHistoryExist()
+- Verifies that a supplier is deleted when it has no product associations or purchase history.
+
+✅ deleteSupplierThrowsExceptionWhenSupplierHasProductAssociations()
+- Verifies that an IllegalStateException is thrown when a supplier is associated with products.
+- Verifies that the supplier is not deleted.
+
+✅ deleteSupplierThrowsExceptionWhenSupplierHasPurchaseHistory()
+- Verifies that an IllegalStateException is thrown when a supplier has purchase history.
+- Verifies that the supplier is not deleted.
 
 ## ProductSupplierServiceTest
 
@@ -2179,6 +2647,45 @@ Pass
 
 **Test Result:**
 Pass
+
+
+### DELETE Supplier — Block Deletion When Product Associations Exist
+
+**Test:** deleteSupplierReturnsConflictWhenSupplierHasProductAssociations()
+
+**Test Class:** SupplierControllerTest.java
+
+**Endpoint:** `DELETE /suppliers/2`
+
+**Expected Result:**
+- HTTP 409 Conflict
+- Response explains that the supplier is associated with products
+- Supplier deletion is blocked
+- `deleteSupplier(2L)` is called on the SupplierService
+
+**Test Result:**
+Pass
+
+
+### DELETE Supplier — Block Deletion When Purchase History Exists
+
+**Test:** deleteSupplierReturnsConflictWhenSupplierHasPurchaseHistory()
+
+**Test Class:** SupplierControllerTest.java
+
+**Endpoint:** `DELETE /suppliers/2`
+
+**Expected Result:**
+- HTTP 409 Conflict
+- Response explains that the supplier has purchase history
+- Supplier deletion is blocked
+- `deleteSupplier(2L)` is called on the SupplierService
+
+**Test Result:**
+Pass
+
+
+
 
 ### POST ProductSupplier — Create ProductSupplier
 

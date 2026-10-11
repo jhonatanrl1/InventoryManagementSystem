@@ -12,14 +12,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 import com.example.inventory_management_system.exception.SupplierNotFoundException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
+
+import com.example.inventory_management_system.repository.ProductSupplierRepository;
+import com.example.inventory_management_system.repository.PurchaseRepository;
+
 
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +30,14 @@ public class SupplierServiceTest {
 
     @Mock
     private SupplierRepository supplierRepository;
+
+
+    @Mock
+    private ProductSupplierRepository productSupplierRepository;
+
+    @Mock
+    private PurchaseRepository purchaseRepository;
+
 
     @InjectMocks
     private SupplierService supplierService;
@@ -137,8 +148,9 @@ public class SupplierServiceTest {
     }
 
 
+
     @Test
-    void deleteSupplierRemovesSupplier() {
+    void deleteSupplierRemovesSupplierWhenNoAssociationsOrPurchaseHistoryExist() {
 
         Supplier supplier = new Supplier();
         supplier.setSupplierId(2L);
@@ -147,10 +159,65 @@ public class SupplierServiceTest {
         when(supplierRepository.findById(2L))
                 .thenReturn(Optional.of(supplier));
 
+        when(productSupplierRepository.existsBySupplier_SupplierId(2L))
+                .thenReturn(false);
+
+        when(purchaseRepository.existsBySupplier_SupplierId(2L))
+                .thenReturn(false);
+
         supplierService.deleteSupplier(2L);
 
         verify(supplierRepository).delete(supplier);
     }
+
+
+    @Test
+    void deleteSupplierThrowsExceptionWhenSupplierHasProductAssociations() {
+
+        Supplier supplier = new Supplier();
+        supplier.setSupplierId(2L);
+        supplier.setName("TechSource Distributors");
+
+        when(supplierRepository.findById(2L))
+                .thenReturn(Optional.of(supplier));
+
+        when(productSupplierRepository.existsBySupplier_SupplierId(2L))
+                .thenReturn(true);
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> supplierService.deleteSupplier(2L)
+        );
+
+        verify(supplierRepository, never()).delete(supplier);
+    }
+
+
+
+    @Test
+    void deleteSupplierThrowsExceptionWhenSupplierHasPurchaseHistory() {
+
+        Supplier supplier = new Supplier();
+        supplier.setSupplierId(2L);
+        supplier.setName("TechSource Distributors");
+
+        when(supplierRepository.findById(2L))
+                .thenReturn(Optional.of(supplier));
+
+        when(productSupplierRepository.existsBySupplier_SupplierId(2L))
+                .thenReturn(false);
+
+        when(purchaseRepository.existsBySupplier_SupplierId(2L))
+                .thenReturn(true);
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> supplierService.deleteSupplier(2L)
+        );
+
+        verify(supplierRepository, never()).delete(supplier);
+    }
+
 
 
 

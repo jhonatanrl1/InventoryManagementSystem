@@ -28,7 +28,9 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 
+import com.example.inventory_management_system.exception.GlobalExceptionHandler;
 
+import static org.mockito.Mockito.doThrow;
 
 public class SupplierControllerTest {
 
@@ -37,8 +39,17 @@ public class SupplierControllerTest {
     private final SupplierController supplierController =
             new SupplierController(supplierService);
 
+
+
+
     private final MockMvc mockMvc =
-            MockMvcBuilders.standaloneSetup(supplierController).build();
+            MockMvcBuilders.standaloneSetup(supplierController)
+                    .setControllerAdvice(new GlobalExceptionHandler())
+                    .build();
+
+
+
+
 
     @Test
     void getAllSuppliersReturnsSuppliers() throws Exception {
@@ -167,6 +178,51 @@ public class SupplierControllerTest {
 
         mockMvc.perform(delete("/suppliers/2"))
                 .andExpect(status().isOk());
+
+        verify(supplierService).deleteSupplier(2L);
+    }
+
+
+
+    @Test
+    void deleteSupplierReturnsConflictWhenSupplierHasProductAssociations() throws Exception {
+
+        doThrow(new IllegalStateException(
+                "Cannot delete supplier because it is associated with products. "
+                        + "Remove the product associations first."))
+                .when(supplierService).deleteSupplier(2L);
+
+        mockMvc.perform(delete("/suppliers/2"))
+                .andExpect(status().isConflict())
+                .andExpect(
+                        org.springframework.test.web.servlet.result.MockMvcResultMatchers
+                                .content().string(
+                                        "Cannot delete supplier because it is associated with products. "
+                                                + "Remove the product associations first."
+                                )
+                );
+
+        verify(supplierService).deleteSupplier(2L);
+    }
+
+
+
+
+    @Test
+    void deleteSupplierReturnsConflictWhenSupplierHasPurchaseHistory() throws Exception {
+
+        doThrow(new IllegalStateException(
+                "Cannot delete supplier because it has purchase history."))
+                .when(supplierService).deleteSupplier(2L);
+
+        mockMvc.perform(delete("/suppliers/2"))
+                .andExpect(status().isConflict())
+                .andExpect(
+                        org.springframework.test.web.servlet.result.MockMvcResultMatchers
+                                .content().string(
+                                        "Cannot delete supplier because it has purchase history."
+                                )
+                );
 
         verify(supplierService).deleteSupplier(2L);
     }
