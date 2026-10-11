@@ -1467,6 +1467,31 @@ This test confirms that the React frontend automatically reloads the supplier li
 
 
 
+## Refactor Frontend Testing
+
+### Supplier Tests
+- Products view loads and displays the product list.
+- Suppliers view loads and displays the supplier list.
+- Add a test supplier and verify it appears in the list.
+- Edit a test supplier and verify the changes persist.
+- Open the Supplier delete confirmation, then cancel.
+- Verify deletion is blocked when a supplier is associated with a product.
+- Delete a supplier without associations.
+
+### Product Tests
+- Verify the frontend inventory value matches `GET /inventory/value`.
+- Verify the displayed product count matches the expected count.
+- Add a test product and verify it appears in the list.
+- Edit a test product and verify the changes persist.
+- Open the Product delete confirmation, then cancel.
+- Delete a product.
+- Test Product search using uppercase and lowercase terms.
+
+**Result:**  14 frontend functional tests passed.
+
+
+
+
 # Supplier Backend Testing
 
 ## POST Suppliers — Create Supplier
