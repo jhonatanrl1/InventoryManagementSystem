@@ -10,7 +10,9 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    List<Product> findByNameContainingIgnoreCase(String name);
+    List<Product> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+            String name,
+            String description);
 
     @Query("SELECT p FROM Product p WHERE p.quantityInStock <= p.lowStockThreshold")
     List<Product> findLowStockProducts();

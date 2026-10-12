@@ -489,6 +489,47 @@ Pass
 
 The empty array indicates that no product matched the search term zzzzzz.
 
+
+## Product Search — Name and Description
+
+**Test 1: Search by product name**
+
+- **Request:** `GET /products?search=keyboard`
+- **Expected:** Returns products whose names contain `keyboard`.
+
+**Test 2: Case-insensitive name search**
+
+- **Request:** `GET /products?search=KEYBOARD`
+- **Expected:** Returns the same matching products regardless of capitalization.
+
+**Test 3: Search by description**
+
+- **Request:** `GET /products?search=mechanical`
+- **Expected:** Returns products whose descriptions contain `mechanical`, even if their names do not contain that term.
+
+**Test 4: Case-insensitive description search**
+
+- **Request:** `GET /products?search=MECHANICAL`
+- **Expected:** Returns the same matching products regardless of capitalization.
+
+**Test 5: No matching products**
+
+- **Request:** `GET /products?search=zzzzzz`
+- **Expected:** HTTP `200 OK` with an empty array (`[]`).
+
+**Test 6: Blank search**
+
+- **Request:** `GET /products?search=`
+- **Expected:** HTTP `200 OK` with all products.
+
+**Test 7: Product with a blank description**
+
+- **Request:** `GET /products?search=Test%20Monitor`
+- **Expected:** Returns product ID `4`, `Test Monitor`, even though its description is empty.
+
+**Result:** All seven manual Postman tests passed.
+
+
 ## GET Products — Low-stock products
 
 **Endpoint:**

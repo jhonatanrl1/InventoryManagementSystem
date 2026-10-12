@@ -25,7 +25,9 @@ public class ProductService {
             return productRepository.findAll();
         }
 
-        return productRepository.findByNameContainingIgnoreCase(search);
+        return productRepository
+                .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+                        search, search);
     }
 
 
