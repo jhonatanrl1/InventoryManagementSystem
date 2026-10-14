@@ -33,18 +33,60 @@ public class SupplierService {
 
 
 
-    public List<Supplier> getAllSuppliers() {
-        return supplierRepository.findAll();
+
+
+
+    public List<Supplier> getAllSuppliers(String search) {
+        if (search == null || search.isBlank()) {
+            return supplierRepository.findAll();
+        }
+
+        // Search supplier name, contact name, and email.
+        List<Supplier> suppliers =
+                supplierRepository
+                        .findByNameContainingIgnoreCaseOrContactNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                                search, search, search);
+
+        // Remove formatting from the search term before searching phone numbers.
+        String phoneSearch = normalizePhone(search);
+
+        if (phoneSearch != null) {
+            List<Supplier> phoneMatches =
+                    supplierRepository.findByNormalizedPhoneContaining(phoneSearch);
+
+            // Add phone matches without duplicating suppliers already found by text search.
+            for (Supplier phoneMatch : phoneMatches) {
+                boolean alreadyIncluded = suppliers.stream()
+                        .anyMatch(supplier ->
+                                supplier.getSupplierId().equals(phoneMatch.getSupplierId()));
+
+                if (!alreadyIncluded) {
+                    suppliers.add(phoneMatch);
+                }
+            }
+        }
+
+        return suppliers;
     }
+
+
+
+
+
+
 
     public Supplier getSupplierById(Long id) {
         return supplierRepository.findById(id)
                 .orElseThrow(() -> new SupplierNotFoundException("Supplier not found"));
     }
 
+
     public Supplier createSupplier(Supplier supplier) {
+        supplier.setNormalizedPhone(normalizePhone(supplier.getPhone()));
         return supplierRepository.save(supplier);
     }
+
+
 
     public Supplier updateSupplier(Long id, Supplier supplierDetails) {
 
@@ -54,6 +96,8 @@ public class SupplierService {
         supplier.setContactName(supplierDetails.getContactName());
         supplier.setEmail(supplierDetails.getEmail());
         supplier.setPhone(supplierDetails.getPhone());
+
+        supplier.setNormalizedPhone(normalizePhone(supplier.getPhone()));
 
         return supplierRepository.save(supplier);
     }
@@ -79,6 +123,15 @@ public class SupplierService {
 
 
 
+    private String normalizePhone(String phone) {
+        if (phone == null) {
+            return null;
+        }
+
+        String digitsOnly = phone.replaceAll("\\D", "");
+
+        return digitsOnly.isEmpty() ? null : digitsOnly;
+    }
 
 
 

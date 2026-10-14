@@ -6,6 +6,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
+
+
 @Entity
 public class Supplier {
 
@@ -21,6 +25,12 @@ public class Supplier {
     private String email;
 
     private String phone;
+
+
+    @Column(name = "normalized_phone")
+    @JsonIgnore
+    private String normalizedPhone;
+
 
     public Long getSupplierId() {
         return supplierId;
@@ -61,5 +71,18 @@ public class Supplier {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+
+    public String getNormalizedPhone() {
+        return normalizedPhone;
+    }
+
+
+    public void setNormalizedPhone(String normalizedPhone) {
+        this.normalizedPhone = normalizedPhone;
+    }
+
+
+
 }
 

@@ -140,7 +140,7 @@ public class SupplierServiceTest {
         when(supplierRepository.findAll())
                 .thenReturn(List.of(supplier1, supplier2));
 
-        List<Supplier> result = supplierService.getAllSuppliers();
+        List<Supplier> result = supplierService.getAllSuppliers(null);
 
         assertEquals(2, result.size());
         assertEquals("ABC Electronics", result.get(0).getName());

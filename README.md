@@ -78,6 +78,41 @@ The frontend communicates with the Spring Boot REST API using HTTP requests and 
 The database uses a relational structure to manage products, suppliers, supplier pricing, and purchase history.
 
 
+
+### Database Setup and Migrations
+
+The application uses **MySQL** for data persistence and **Flyway** to manage database schema migrations.
+
+#### Initial Setup
+
+1. Install MySQL and create an empty database named `inventory_management`.
+2. Configure the database connection and password using the local environment configuration.
+3. Start the Spring Boot application.
+
+Flyway automatically applies versioned SQL migration files from `src/main/resources/db/migration/` when the application starts.
+
+The initial database schema is defined in `V1__create_initial_schema.sql`. Hibernate uses schema validation to verify that the database structure matches the application's entity mappings.
+
+#### Existing Databases
+
+The development database was baselined at Flyway version 1 to register its existing schema without recreating its tables or data. The temporary baseline configuration was removed after this process.
+
+#### Future Schema Changes
+
+For future database schema changes, create a new versioned SQL migration instead of modifying an existing migration that has already been applied.
+
+For example:
+
+```text
+src/main/resources/db/migration/
+  V1__create_initial_schema.sql
+  V2__add_product_category.sql
+```
+
+Flyway applies pending migrations in version order when the application starts.
+
+
+
 ### Product
 
 Stores information about the products being sold.
@@ -94,7 +129,7 @@ low_stock_threshold
 
 ### Supplier
 
-Stores information about suppliers.
+Stores information about suppliers, including a normalized phone number used to support phone-number searches regardless of formatting.
 
 ```text
 Supplier
@@ -104,6 +139,7 @@ name
 contact_name
 email
 phone
+normalized_phone        INDEX
 ```
 ### Product_Supplier
 
@@ -181,10 +217,18 @@ DELETE    /products/{id}
 ```
 
 ### Search & Filtering
+
+#### Products
 ```text
-GET       /products?search={name}
+GET       /products?search={term}
 GET       /products?lowStock=true
 ```
+
+#### Suppliers
+```text
+GET /suppliers?search={term}
+```
+
 ### Inventory
 ```text
 GET       /inventory/value

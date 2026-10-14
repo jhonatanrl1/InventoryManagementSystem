@@ -21,10 +21,16 @@ public class SupplierController {
         this.supplierService = supplierService;
     }
 
+
+
     @GetMapping
-    public List<Supplier> getAllSuppliers() {
-        return supplierService.getAllSuppliers();
+    public List<Supplier> getAllSuppliers(
+            @RequestParam(required = false) String search) {
+        return supplierService.getAllSuppliers(search);
     }
+
+
+
 
     @GetMapping("/{id}")
     public Supplier getSupplierById(@PathVariable Long id) {

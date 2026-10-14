@@ -1698,6 +1698,95 @@ Response Body:  Supplier not found
 Supplier ID 1 had been deleted. The API correctly returned 404 Not Found instead of a 500 Internal Server Error.
 
 
+## Supplier Search Tests
+
+### GET Suppliers — Search by Supplier Name
+
+**Endpoint:**
+- `GET /suppliers?search=TechSource`
+- `GET /suppliers?search=TECHSOURCE`
+
+**Expected Result:**
+- Status: `200 OK`
+- The response includes TechSource Distributors (supplier ID 2).
+- Search is case-insensitive.
+
+**Test Result:** Pass
+
+### GET Suppliers — Search by Contact Name
+
+**Endpoint:**
+- `GET /suppliers?search=Carlos`
+
+**Expected Result:**
+- Status: `200 OK`
+- The response includes Carlos Martinez at TechSource Distributors (supplier ID 2).
+
+**Test Result:** Pass
+
+### GET Suppliers — Search by Email
+
+**Endpoint:**
+- `GET /suppliers?search=techsource.com`
+- `GET /suppliers?search=TECHSOURCE.COM`
+
+**Expected Result:**
+- Status: `200 OK`
+- The response includes `carlos@techsource.com`.
+- Search is case-insensitive.
+
+**Test Result:** Pass
+
+### GET Suppliers — Search by Phone Number
+
+**Endpoint:**
+- `GET /suppliers?search=5551112222`
+- `GET /suppliers?search=555-111-2222`
+- `GET /suppliers?search=2222`
+- `GET /suppliers?search=1112222`
+- `GET /suppliers?search=555%20111%202222`
+
+**Expected Result:**
+- Status: `200 OK`
+- The response includes TechSource Distributors (supplier ID 2).
+- Phone searches ignore formatting characters such as hyphens and spaces.
+- Partial phone-number searches can match the last digits or a middle portion of the number.
+
+**Test Result:** Pass
+
+### GET Suppliers — Search with No Matches
+
+**Endpoint:**
+- `GET /suppliers?search=zzzzzz`
+
+**Expected Result:**
+- Status: `200 OK`
+- The response is an empty JSON array: `[]`.
+
+**Test Result:** Pass
+
+### Automated Tests — Maven
+
+**Command / Procedure:**
+- IntelliJ Maven → Lifecycle → `clean`
+- IntelliJ Maven → Lifecycle → `test`
+
+**Expected Result:**
+- All automated tests pass with zero failures and zero errors.
+
+**Test Result:**
+- 62 tests run.
+- 0 failures.
+- 0 errors.
+- 0 skipped.
+- Build successful.
+
+
+
+
+
+
+
 # ProductSupplier Backend Testing
 
 ## POST ProductSupplier — Create Product-Supplier Relationship

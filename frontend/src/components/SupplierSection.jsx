@@ -203,7 +203,7 @@ return (
       <h2>Suppliers</h2>
 
       <form onSubmit={handleAddSupplier}>
-        <h3>Add Supplier</h3>
+
 
         <input
           type="text"

@@ -137,8 +137,14 @@ public class ProductServiceTest {
         product.setProductId(2L);
         product.setName("Keyboard");
 
-        when(productRepository.findByNameContainingIgnoreCase("KEYBOARD"))
+
+
+        when(productRepository
+                .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+                        "KEYBOARD", "KEYBOARD"))
                 .thenReturn(List.of(product));
+
+
 
         List<Product> result = productService.getAllProducts("KEYBOARD");
 
@@ -149,8 +155,12 @@ public class ProductServiceTest {
     @Test
     void getAllProductsReturnsEmptyListWhenSearchHasNoMatches() {
 
-        when(productRepository.findByNameContainingIgnoreCase("zzzzzz"))
+
+        when(productRepository
+                .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+                        "zzzzzz", "zzzzzz"))
                 .thenReturn(List.of());
+
 
         List<Product> result = productService.getAllProducts("zzzzzz");
 

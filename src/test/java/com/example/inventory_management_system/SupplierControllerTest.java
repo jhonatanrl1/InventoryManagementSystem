@@ -68,7 +68,7 @@ public class SupplierControllerTest {
         supplier2.setEmail("carlos@techsource.com");
         supplier2.setPhone("555-111-2222");
 
-        when(supplierService.getAllSuppliers())
+        when(supplierService.getAllSuppliers(null))
                 .thenReturn(List.of(supplier1, supplier2));
 
         mockMvc.perform(get("/suppliers"))
