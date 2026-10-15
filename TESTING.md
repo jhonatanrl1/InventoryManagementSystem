@@ -1531,6 +1531,112 @@ This test confirms that the React frontend automatically reloads the supplier li
 **Result:**  14 frontend functional tests passed.
 
 
+## Supplier Search — Frontend Tests
+
+**Feature:** Search suppliers by name, contact name, email, and phone number.
+
+**Endpoint:** `GET /suppliers?search={term}`
+
+####Test 1: Search by Supplier Name
+
+**Setup:** Supplier records exist in the database.
+
+**Action:** Enter a supplier name into the Supplier Search input.
+
+**Expected Result:** The frontend displays matching suppliers.
+
+**Test Result:** Pass
+
+### Test 2: Search by Contact Name
+
+**Setup:** Supplier records include contact names.
+
+**Action:** Search using a contact name.
+
+**Expected Result:** The frontend displays suppliers matching the contact name.
+
+**Test Result:** Pass
+
+### Test 3: Search by Email
+
+**Setup:** Supplier records include email addresses.
+
+**Action:** Search using an email address or part of an email address.
+
+**Expected Result:** The frontend displays matching suppliers.
+
+**Test Result:** Pass
+
+### Test 4: Search by Phone Number
+
+**Setup:** Supplier records include phone numbers.
+
+**Action:** Search using a phone number or part of a phone number.
+
+**Expected Result:** The frontend displays matching suppliers.
+
+**Test Result:** Pass
+
+### Test 5: Search With No Matching Results
+
+**Setup:** Supplier records exist in the database.
+
+**Action:** Enter a search term that does not match any supplier.
+
+**Expected Result:** No supplier cards are displayed, and the frontend remains functional.
+
+**Test Result:** Pass
+
+### Test 6: Preserve Search After Adding a Supplier
+
+**Setup:** A supplier search is active.
+
+**Action:** Add a supplier while the search is active.
+
+**Expected Result:** The supplier list refreshes and displays only suppliers matching the current search.
+
+**Test Result:** Pass
+
+### Test 7: Preserve Search After Editing a Supplier
+
+**Setup:** A supplier search is active and a matching supplier is available to edit.
+
+**Action:** Edit the supplier and save the changes.
+
+**Expected Result:** The supplier list refreshes while preserving the active search.
+
+**Test Result:** Pass
+
+### Test 8: Refresh Search After Deleting a Supplier
+
+**Setup:** A supplier search is active and a matching supplier is available to delete.
+
+**Action:** Delete the supplier.
+
+**Expected Result:** The supplier list refreshes, preserving the active search and excluding the deleted supplier.
+
+**Test Result:** Pass
+
+### Test 9: Clear Supplier Search
+
+**Setup:** A supplier search has filtered the supplier list.
+
+**Action:** Clear the Supplier Search input.
+
+**Expected Result:** All remaining suppliers are displayed.
+
+**Test Result:** Pass
+
+### Test 10: Case-Insensitive Supplier Search
+
+**Setup:** A supplier exists with a known name, contact name, or email address.
+
+**Action:** Search using different capitalization from the stored value.
+
+**Expected Result:** The matching supplier is returned regardless of capitalization.
+
+**Test Result:** Pass
+
 
 
 # Supplier Backend Testing

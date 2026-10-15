@@ -33,15 +33,7 @@ function App() {
 
 
 
-
-
-
-
-
   const [showSuppliers, setShowSuppliers] = useState(false);
-
-
-
 
 
 
@@ -71,9 +63,6 @@ function App() {
           setLoading(false);
         });
   }, [search, lowStock]);
-
-
-
 
 
 
@@ -237,22 +226,6 @@ function handleDeleteProduct(productId) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   return (
     <div className="app">
       <h1>Inventory Management System</h1>
@@ -310,8 +283,6 @@ function handleDeleteProduct(productId) {
 
 
 
-
-
         <input
           type="number"
           placeholder="Quantity in stock"
@@ -339,12 +310,7 @@ function handleDeleteProduct(productId) {
 
 
 
-
-
 {showSuppliers && <SupplierSection />}
-
-
-
 
 
 
@@ -352,7 +318,7 @@ function handleDeleteProduct(productId) {
       <>
 
 
-      <h2>Products</h2>
+
 
       {inventoryValue !== null && (
         <p>Inventory Value: ${inventoryValue}</p>
@@ -376,6 +342,9 @@ function handleDeleteProduct(productId) {
         {lowStock ? "Show All Products" : "Show Low Stock"}
       </button>
 
+
+      <h2>Products</h2>
+
         <div className="product-list">
           {loading ? (
             <p>Loading products...</p>
@@ -393,6 +362,9 @@ function handleDeleteProduct(productId) {
            <div className="product-card" key={product.productId}>
              {editingProductId === product.productId ? (
                <form onSubmit={handleUpdateProduct}>
+                   <h3>Edit Product</h3>
+
+
                  <label>
                    Product Name
                    <input
@@ -446,7 +418,7 @@ function handleDeleteProduct(productId) {
                    />
                  </label>
 
-                 <button type="submit">Update Product</button>
+                 <button type="submit">Save Changes</button>
 
                  <button
                    type="button"
@@ -524,19 +496,8 @@ function handleDeleteProduct(productId) {
 
 
 
-
-
-
-
-
-
       </>
     )}
-
-
-
-
-
 
 
     </div>

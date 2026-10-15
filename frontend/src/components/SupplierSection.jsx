@@ -17,24 +17,33 @@ function SupplierSection() {
   const [deleteSupplierId, setDeleteSupplierId] = useState(null);
   const [deleteSupplierName, setDeleteSupplierName] = useState("");
 
+  const [supplierSearch, setSupplierSearch] = useState("");
+
+
 
 useEffect(() => {
-    fetch("http://localhost:8080/suppliers")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Unable to load suppliers.");
-        }
+  const fetchSuppliers = async () => {
+    try {
+      const url = supplierSearch.trim()
+        ? `http://localhost:8080/suppliers?search=${encodeURIComponent(supplierSearch.trim())}`
+        : "http://localhost:8080/suppliers";
 
-        return response.json();
-      })
-      .then((data) => {
-        setSuppliers(data);
-        setSupplierError("");
-      })
-      .catch((error) => {
-        setSupplierError(error.message);
-      });
-  }, []);
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error("Unable to load suppliers.");
+      }
+
+      const data = await response.json();
+      setSuppliers(data);
+      setSupplierError("");
+    } catch (error) {
+      setSupplierError(error.message || "Unable to load suppliers.");
+    }
+  };
+
+  fetchSuppliers();
+}, [supplierSearch]);
 
 
 
@@ -74,9 +83,17 @@ useEffect(() => {
         setEmail("");
         setPhone("");
 
-        const suppliersResponse = await fetch(
-          "http://localhost:8080/suppliers"
-        );
+
+
+
+        const suppliersUrl = supplierSearch.trim()
+          ? `http://localhost:8080/suppliers?search=${encodeURIComponent(supplierSearch.trim())}`
+          : "http://localhost:8080/suppliers";
+
+        const suppliersResponse = await fetch(suppliersUrl);
+
+
+
 
         if (!suppliersResponse.ok) {
           throw new Error("Supplier was added, but the list could not be refreshed.");
@@ -131,9 +148,14 @@ const handleUpdateSupplier = async (event) => {
       setEditEmail("");
       setEditPhone("");
 
-      const suppliersResponse = await fetch(
-        "http://localhost:8080/suppliers"
-      );
+
+      const suppliersUrl = supplierSearch.trim()
+        ? `http://localhost:8080/suppliers?search=${encodeURIComponent(supplierSearch.trim())}`
+        : "http://localhost:8080/suppliers";
+
+      const suppliersResponse = await fetch(suppliersUrl);
+
+
 
       if (!suppliersResponse.ok) {
         throw new Error("Supplier was updated, but the list could not be refreshed.");
@@ -168,9 +190,17 @@ const handleDeleteSupplier = async (supplierId) => {
         throw new Error(message || "Unable to delete supplier.");
       }
 
-      const suppliersResponse = await fetch(
-        "http://localhost:8080/suppliers"
-      );
+
+
+      const suppliersUrl = supplierSearch.trim()
+        ? `http://localhost:8080/suppliers?search=${encodeURIComponent(supplierSearch.trim())}`
+        : "http://localhost:8080/suppliers";
+
+      const suppliersResponse = await fetch(suppliersUrl);
+
+
+
+
 
       if (!suppliersResponse.ok) {
         throw new Error("Supplier was deleted, but the list could not be refreshed.");
@@ -200,7 +230,7 @@ const handleDeleteSupplier = async (supplierId) => {
 
 return (
     <section>
-      <h2>Suppliers</h2>
+      <h2>Add Supplier</h2>
 
       <form onSubmit={handleAddSupplier}>
 
@@ -244,6 +274,20 @@ return (
         <p className="error-message">{supplierError}</p>
       )}
 
+
+
+
+    <input
+      type="text"
+      placeholder="Search Suppliers..."
+      value={supplierSearch}
+      onChange={(event) => setSupplierSearch(event.target.value)}
+    />
+
+
+       <h2>Suppliers</h2>
+
+
       <div className="supplier-list">
         {suppliers.map((supplier) => (
           <div
@@ -254,6 +298,9 @@ return (
               <form onSubmit={handleUpdateSupplier}>
                 <h3>Edit Supplier</h3>
 
+
+                <label>
+                    Supplier Name
                 <input
                   type="text"
                   value={editSupplierName}
@@ -262,7 +309,11 @@ return (
                   }
                   required
                 />
+                </label>
 
+
+                <label>
+                    Contact Name
                 <input
                   type="text"
                   value={editContactName}
@@ -271,7 +322,10 @@ return (
                   }
                   required
                 />
+                </label>
 
+                <label>
+                    Email
                 <input
                   type="email"
                   value={editEmail}
@@ -280,7 +334,10 @@ return (
                   }
                   required
                 />
+                </label>
 
+               <label>
+                   Phone
                 <input
                   type="tel"
                   value={editPhone}
@@ -289,6 +346,11 @@ return (
                   }
                   required
                 />
+                </label>
+
+
+
+            <div className="edit-form-buttons">
 
                 <button type="submit">Save Changes</button>
 
@@ -305,6 +367,10 @@ return (
                 >
                   Cancel
                 </button>
+
+                </div>
+
+
               </form>
             ) : (
               <>
