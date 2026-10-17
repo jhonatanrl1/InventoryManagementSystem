@@ -35,34 +35,52 @@ function App() {
 
   const [showSuppliers, setShowSuppliers] = useState(false);
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+
+
+const [refreshTrigger, setRefreshTrigger] = useState(0);
 
 
 
   useEffect(() => {
-    const url = lowStock
-      ? "http://localhost:8080/products?lowStock=true"
-      : `http://localhost:8080/products?search=${search}`;
+    const params = new URLSearchParams();
 
-      setLoading(true);
-      setError("");
+    params.set("page", currentPage);
+    params.set("size", "10");
 
-      fetch(url)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to load products");
-          }
+    if (lowStock) {
+      params.set("lowStock", "true");
+    } else if (search.trim() !== "") {
+      params.set("search", search.trim());
+    }
 
-          return response.json();
-        })
-        .then((data) => {
-          setProducts(data);
-          setLoading(false);
-        })
-        .catch(() => {
-          setError("Unable to load products.");
-          setLoading(false);
-        });
-  }, [search, lowStock]);
+    const url = `http://localhost:8080/products?${params.toString()}`;
+
+    setLoading(true);
+    setError("");
+
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load products");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        setProducts(data.content);
+        setCurrentPage(data.number);
+        setTotalPages(data.totalPages);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("Unable to load products.");
+        setLoading(false);
+      });
+  }, [search, lowStock, currentPage, refreshTrigger]);
+
 
 
 
@@ -78,6 +96,7 @@ useEffect(() => {
 
 function handleAddProduct(event) {
   event.preventDefault();
+  setError("");
 
   fetch("http://localhost:8080/products", {
     method: "POST",
@@ -109,17 +128,10 @@ function handleAddProduct(event) {
         setSearch("");
         setLowStock(false);
 
-        return fetch("http://localhost:8080/products");
-      })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to reload products");
-        }
+       setCurrentPage(0);
 
-        return response.json();
-      })
-      .then((data) => {
-        setProducts(data);
+       setRefreshTrigger((count) => count + 1);
+
       })
 
 
@@ -141,6 +153,7 @@ function handleEditProduct(product) {
 
 function handleUpdateProduct(event) {
   event.preventDefault();
+  setError("");
 
   fetch(`http://localhost:8080/products/${editingProductId}`, {
     method: "PUT",
@@ -172,16 +185,8 @@ function handleUpdateProduct(event) {
       setEditQuantityInStock("");
       setEditLowStockThreshold("");
 
-      return fetch("http://localhost:8080/products");
-    })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to reload products");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      setProducts(data);
+      setRefreshTrigger((count) => count + 1);
+
     })
 
 
@@ -192,9 +197,9 @@ function handleUpdateProduct(event) {
 
 
 
-
-
 function handleDeleteProduct(productId) {
+  setError("");
+
   fetch(`http://localhost:8080/products/${productId}`, {
     method: "DELETE",
   })
@@ -203,26 +208,18 @@ function handleDeleteProduct(productId) {
         throw new Error("Failed to delete product");
       }
 
-      return fetch("http://localhost:8080/products");
-    })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to reload products");
-      }
-
-      return response.json();
-    })
-
-    .then((data) => {
-      setProducts(data);
       setDeleteProductId(null);
       setDeleteProductName("");
-    })
 
+      setRefreshTrigger((count) => count + 1);
+    })
     .catch(() => {
       setError("Unable to delete product.");
     });
 }
+
+
+
 
 
 
@@ -461,6 +458,30 @@ function handleDeleteProduct(productId) {
 
 
 
+
+     <div className="pagination-controls">
+           <button
+             type="button"
+             onClick={() => setCurrentPage((page) => page - 1)}
+             disabled={currentPage === 0 || loading}
+           >
+             Previous
+           </button>
+
+           <span>
+             Page {currentPage + 1} of {totalPages}
+           </span>
+
+           <button
+             type="button"
+             onClick={() => setCurrentPage((page) => page + 1)}
+             disabled={currentPage >= totalPages - 1 || loading}
+           >
+             Next
+           </button>
+         </div>
+
+
 {/* DELETE MODAL */}
     {deleteProductId !== null && (
       <div className="delete-modal-overlay">
@@ -501,6 +522,12 @@ function handleDeleteProduct(productId) {
 
 
     </div>
+
+
+
+
+
+
   );
 }
 

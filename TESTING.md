@@ -994,6 +994,222 @@ This test confirms the complete product deletion workflow from the React fronten
 
 
 
+# Frontend Testing — Product Pagination and CRUD Operations
+
+## 1. Product Pagination — Navigate Between Pages
+
+**Frontend File:** `src/App.jsx`  
+**Backend Endpoint:** `GET /products?page={page}&size={size}`
+
+### Test 1.1 — Display the First Page
+
+**SETUP →** Start the Spring Boot backend and React frontend. Ensure that at least one product exists in the database.
+
+**ACTION →** Open the product inventory page and inspect the first page.
+
+**VERIFICATION →**
+- The product list loads successfully.
+- The frontend displays the products returned by the backend.
+- The page indicator displays the current page and total number of pages.
+- The Previous button is disabled on the first page.
+- The Next button is disabled when there is only one page.
+
+**Expected Result:** The first page displays the available products and correct pagination controls.
+
+**Test Result:** Pass
+
+### Test 1.2 — Navigate to the Next Page
+
+**SETUP →** Temporarily configure the frontend page size to 3 products per page. Ensure that at least four products exist.
+
+**ACTION →** Click the Next button.
+
+**VERIFICATION →**
+- The frontend requests the next page from the backend.
+- The product list displays the products belonging to the next page.
+- The page indicator updates.
+- The Previous button becomes enabled.
+
+**Expected Result:** The user can navigate forward without manually refreshing the browser.
+
+**Test Result:** Pass
+
+### Test 1.3 — Navigate Between Multiple Pages
+
+**SETUP →** Keep the temporary page size set to 3 and ensure that enough products exist to produce three pages.
+
+**ACTION →** Navigate from the first page to the second page and then to the third page. Navigate backward using Previous.
+
+**VERIFICATION →**
+- Each page displays the correct group of products.
+- The page indicator updates correctly.
+- Previous and Next navigate to the expected pages.
+- Previous is disabled on the first page.
+- Next is disabled on the last page.
+
+**Expected Result:** The user can navigate forward and backward through the available pages without errors.
+
+**Test Result:** Pass
+
+### Test 1.4 — Handle a Page with No Results
+
+**SETUP →** Use the backend endpoint `GET /products?page=1&size=10` when the database contains eight products.
+
+**ACTION →** Request the second page.
+
+**VERIFICATION →**
+- The response contains an empty `content` array.
+- `totalElements` remains 8.
+- `totalPages` is 1.
+
+**Expected Result:** The backend returns an empty page because all eight products fit on the first page of ten. The frontend prevents navigation to a nonexistent next page.
+
+**Test Result:** Pass
+
+### Test 1.5 — Pagination with Search and Low-Stock Filters
+
+**SETUP →** Ensure that products exist whose names match a search term and that some products meet the low-stock condition.
+
+**ACTION →** Search for `keyboard`, then test the low-stock filter.
+
+**VERIFICATION →**
+- Search returns matching products regardless of capitalization.
+- The low-stock filter returns products meeting the backend's low-stock criteria.
+- The frontend displays the returned products using the paginated response's `content` array.
+
+**Expected Result:** Search and low-stock filtering continue to work with the paginated API response.
+
+**Test Result:** Pass
+
+---
+
+## 2. Create Product — Automatic List Refresh
+
+**Frontend File:** `src/App.jsx`  
+**Frontend Function:** `handleAddProduct()`  
+**Backend Endpoint:** `POST /products`
+
+### Test 2.1 — Add a Product
+
+**SETUP →** Start the backend and frontend. Open the Add Product form and enter valid product information.
+
+**ACTION →** Submit the form to create a new product.
+
+**VERIFICATION →**
+- The backend accepts the request and creates the product.
+- The form fields are cleared after successful creation.
+- The frontend resets the current page to the first page and clears active search and low-stock filters.
+- The `refreshTrigger` state changes, causing `useEffect` to fetch the updated product list.
+- The new product appears without manually refreshing the browser.
+- The browser console contains no errors.
+
+**Expected Result:** The product is created successfully, and the frontend reloads the paginated list automatically.
+
+**Test Result:** Pass
+
+### Test 2.2 — Preserve the Product List Array
+
+**SETUP →** Open the browser console and keep the product inventory page visible.
+
+**ACTION →** Add a product and observe the list after the request finishes.
+
+**VERIFICATION →**
+- The frontend reads products from the paginated response's `data.content` property.
+- The product list continues to render correctly.
+- No `products.map is not a function` error appears.
+
+**Expected Result:** The frontend handles the paginated response without replacing the product array with the entire response object.
+
+**Test Result:** Pass
+
+---
+
+## 3. Update Product — Automatic List Refresh
+
+**Frontend File:** `src/App.jsx`  
+**Frontend Function:** `handleUpdateProduct()`  
+**Backend Endpoint:** `PUT /products/{id}`
+
+### Test 3.1 — Edit an Existing Product
+
+**SETUP →** Select an existing product and open its Edit form.
+
+**ACTION →** Change a product field, such as the description, to `Updated during pagination testing`. Save the changes.
+
+**VERIFICATION →**
+- The backend updates the selected product.
+- The edit form closes after a successful update.
+- The edit fields are cleared.
+- The `refreshTrigger` state changes, causing `useEffect` to fetch the updated paginated list.
+- The updated information appears without manually refreshing the browser.
+- The browser console contains no errors.
+
+**Expected Result:** The product is updated, and the frontend displays the latest information automatically.
+
+**Test Result:** Pass
+
+### Test 3.2 — Update a Product with an Empty Description
+
+**SETUP →** Open an existing product for editing.
+
+**ACTION →** Clear the description field and save the changes.
+
+**VERIFICATION →**
+- The backend accepts the update.
+- The description remains empty.
+- The frontend refreshes the product list.
+- No browser console errors occur.
+
+**Expected Result:** An empty description can be saved successfully under the current validation rules.
+
+**Test Result:** Pass
+
+---
+
+## 4. Delete Product — Automatic List Refresh
+
+**Frontend File:** `src/App.jsx`  
+**Frontend Function:** `handleDeleteProduct(productId)`  
+**Backend Endpoint:** `DELETE /products/{id}`
+
+### Test 4.1 — Confirm the Correct Product
+
+**SETUP →** Select an existing test product.
+
+**ACTION →** Click Delete to open the confirmation modal.
+
+**VERIFICATION →**
+- The modal appears.
+- The modal displays the correct product name.
+
+**Expected Result:** The user can identify which product will be deleted before confirming.
+
+**Test Result:** Pass
+
+### Test 4.2 — Delete the Product
+
+**SETUP →** Keep the confirmation modal open for the selected test product.
+
+**ACTION →** Click Delete in the modal to confirm deletion.
+
+**VERIFICATION →**
+- The backend deletes the selected product.
+- The confirmation modal closes.
+- The `refreshTrigger` state changes, causing `useEffect` to fetch the updated paginated list.
+- The deleted product disappears without manually refreshing the browser.
+- The browser console contains no errors.
+- The product no longer exists in MySQL.
+
+**Expected Result:** The product is deleted from the database and removed from the frontend list automatically.
+
+**Test Result:** Pass
+
+**Note:** A page size of 3 was used temporarily to verify multi-page navigation. The intended frontend page size is 10 products per page.
+
+
+
+
+
 ## Supplier Frontend Testing
 
 ### Test 1 — Create supplier with valid data

@@ -3,10 +3,9 @@ package com.example.inventory_management_system.service;
 import com.example.inventory_management_system.exception.ProductNotFoundException;
 import com.example.inventory_management_system.model.Product;
 import com.example.inventory_management_system.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 
 @Service
 public class ProductService {
@@ -17,30 +16,33 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    public Page<Product> getAllProducts(String search, boolean lowStock, Pageable pageable) {
 
+        boolean hasSearch = search != null && !search.isBlank();
 
-    public List<Product> getAllProducts(String search) {
-
-        if (search == null || search.isBlank()) {
-            return productRepository.findAll();
+        if (hasSearch && lowStock) {
+            return productRepository.searchLowStockProducts(search.trim(), pageable);
         }
 
-        return productRepository
-                .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-                        search, search);
-    }
+        if (hasSearch) {
+            return productRepository.searchProducts(search.trim(), pageable);
+        }
 
+        if (lowStock) {
+            return productRepository.findLowStockProducts(pageable);
+        }
+
+        return productRepository.findAll(pageable);
+    }
 
     public Product getProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
-
     public Product createProduct(Product product) {
         return productRepository.save(product);
     }
-
 
     public Product updateProduct(Long id, Product product) {
         Product existingProduct = productRepository.findById(id)
@@ -57,11 +59,6 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
-    }
-
-
-    public List<Product> getLowStockProducts() {
-        return productRepository.findLowStockProducts();
     }
 
 }
