@@ -2105,7 +2105,94 @@ Supplier ID 1 had been deleted. The API correctly returned 404 Not Found instead
 
 
 
+## Supplier Pagination Tests
 
+### Test 1 — Retrieve the First Page of Suppliers
+
+**Endpoint:** `GET /suppliers?page=0&size=10`
+
+**Setup:** The database contains 5 suppliers.
+
+**Action:** Request the first page with a page size of 10.
+
+**Expected Result:**
+- Status: `200 OK`
+- All 5 suppliers are returned.
+- `totalElements` is 5.
+- `totalPages` is 1.
+- `number` is 0.
+
+**Test Result:** Pass
+
+### Test 2 — Request a Page Beyond the Available Results
+
+**Endpoint:** `GET /suppliers?page=1&size=10`
+
+**Action:** Request the second page when only one page of results exists.
+
+**Expected Result:**
+- Status: `200 OK`
+- `content` is an empty array.
+- `totalElements` remains 5.
+- `totalPages` remains 1.
+
+**Test Result:** Pass
+
+### Test 3 — Search Suppliers with Pagination
+
+**Endpoint:** `GET /suppliers?search=TechSource&page=0&size=10`
+
+**Action:** Search for suppliers by name.
+
+**Expected Result:**
+- Status: `200 OK`
+- Only TechSource Distributors is returned.
+- `totalElements` is 1.
+
+**Test Result:** Pass
+
+### Test 4 — Search Suppliers by Normalized Phone Number
+
+**Endpoint:** `GET /suppliers?search=5551112222&page=0&size=10`
+
+**Action:** Search using a phone number without formatting characters.
+
+**Expected Result:**
+- Status: `200 OK`
+- TechSource Distributors is returned with phone number `555-111-2222`.
+- The supplier appears only once.
+
+**Test Result:** Pass
+
+### Test 5 — Reject a Negative Page Index
+
+**Endpoint:** `GET /suppliers?page=-1&size=10`
+
+**Expected Result:**
+- Status: `400 Bad Request`
+- Response message: `Page index cannot be negative`.
+
+**Test Result:** Pass
+
+### Test 6 — Reject a Page Size of Zero
+
+**Endpoint:** `GET /suppliers?page=0&size=0`
+
+**Expected Result:**
+- Status: `400 Bad Request`
+- Response message: `Page size must be between 1 and 100`.
+
+**Test Result:** Pass
+
+### Test 7 — Reject a Page Size Above the Maximum
+
+**Endpoint:** `GET /suppliers?page=0&size=101`
+
+**Expected Result:**
+- Status: `400 Bad Request`
+- Response message: `Page size must be between 1 and 100`.
+
+**Test Result:** Pass
 
 
 

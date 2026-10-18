@@ -9,6 +9,9 @@ import java.util.List;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 
+import org.springframework.data.domain.Page;
+
+
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -24,10 +27,15 @@ public class SupplierController {
 
 
     @GetMapping
-    public List<Supplier> getAllSuppliers(
-            @RequestParam(required = false) String search) {
-        return supplierService.getAllSuppliers(search);
+    public Page<Supplier> getAllSuppliers(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        return supplierService.getAllSuppliers(search, page, size);
     }
+
+
 
 
 
