@@ -1855,6 +1855,100 @@ This test confirms that the React frontend automatically reloads the supplier li
 
 
 
+## Supplier Pagination Frontend Tests
+
+### Test 1: Display Suppliers With Pagination
+
+**Setup:** Supplier records exist in the database.
+
+**Action:** Open the Suppliers section.
+
+**Expected Result:** The frontend displays the suppliers for the current page and shows the correct page number and total page count.
+
+**Test Result:** Pass
+
+### Test 2: Search Suppliers From a Later Page
+
+**Setup:** Multiple supplier pages exist, and the user is viewing a page other than the first page.
+
+**Action:** Search for `TechSource`.
+
+**Expected Result:** The frontend resets to Page 1 and displays the matching supplier without requiring the user to navigate backward.
+
+**Test Result:** Pass
+
+### Test 3: Clear Supplier Search
+
+**Setup:** A supplier search is active.
+
+**Action:** Clear the search input.
+
+**Expected Result:** The complete supplier list returns, beginning on Page 1, with the correct pagination information.
+
+**Test Result:** Pass
+
+### Test 4: Add Supplier While Viewing a Later Page
+
+**Setup:** The user is viewing Page 2 with a page size of 2.
+
+**Action:** Add a supplier using valid information.
+
+**Expected Result:** The supplier is created, the form fields clear, and the list refreshes using the configured page size. The page label remains valid.
+
+**Test Result:** Pass
+
+### Test 5: Update Supplier While Viewing a Later Page
+
+**Setup:** The user is viewing Page 2 with a page size of 2.
+
+**Action:** Edit a supplier and save the changes.
+
+**Expected Result:** The supplier information updates, the edit form closes, and the list refreshes with the correct page contents and pagination information.
+
+**Test Result:** Pass
+
+### Test 6: Delete Supplier While Viewing a Later Page
+
+**Setup:** The user is viewing Page 2 with a page size of 2.
+
+**Action:** Delete a supplier and confirm the deletion.
+
+**Expected Result:** The confirmation modal closes, the supplier disappears, and the list refreshes with valid pagination information.
+
+**Test Result:** Pass
+
+### Test 7: Delete the Last Supplier on the Last Page
+
+**Setup:** The user is viewing the last page, which contains only one supplier.
+
+**Action:** Delete that supplier and confirm the deletion.
+
+**Expected Result:** The frontend automatically navigates to the previous valid page when the current page no longer exists. The page label and supplier list remain correct.
+
+**Test Result:** Pass
+
+### Test 8: Previous and Next Pagination Controls
+
+**Setup:** Multiple supplier pages exist.
+
+**Action:** Navigate forward and backward through the supplier pages.
+
+**Expected Result:** The correct suppliers appear on each page. The Previous button is disabled on the first page, and the Next button is disabled on the last page.
+
+**Test Result:** Pass
+
+### Test 9: Add, Update, and Delete Without Frontend Errors
+
+**Setup:** The supplier list is displayed.
+
+**Action:** Add, update, and delete suppliers.
+
+**Expected Result:** Each operation refreshes the supplier list without a `suppliers.map is not a function` error or browser console errors.
+
+**Test Result:** Pass
+
+
+
 # Supplier Backend Testing
 
 ## POST Suppliers — Create Supplier

@@ -21,12 +21,28 @@ function SupplierSection() {
 
 
 
+   const [currentPage, setCurrentPage] = useState(0);
+   const [totalPages, setTotalPages] = useState(0);
+
+   const pageSize = 10;
+
+   const [refreshKey, setRefreshKey] = useState(0);
+
+
+
 useEffect(() => {
   const fetchSuppliers = async () => {
     try {
-      const url = supplierSearch.trim()
-        ? `http://localhost:8080/suppliers?search=${encodeURIComponent(supplierSearch.trim())}`
-        : "http://localhost:8080/suppliers";
+      const params = new URLSearchParams({
+        page: currentPage,
+        size: pageSize,
+      });
+
+      if (supplierSearch.trim()) {
+        params.set("search", supplierSearch.trim());
+      }
+
+      const url = `http://localhost:8080/suppliers?${params.toString()}`;
 
       const response = await fetch(url);
 
@@ -34,17 +50,29 @@ useEffect(() => {
         throw new Error("Unable to load suppliers.");
       }
 
-      const data = await response.json();
-      setSuppliers(data);
-      setSupplierError("");
+
+    const data = await response.json();
+
+    setTotalPages(data.totalPages);
+
+    if (data.totalPages > 0 && currentPage >= data.totalPages) {
+      setCurrentPage(data.totalPages - 1);
+      return;
+    }
+
+    setSuppliers(data.content);
+    setCurrentPage(data.number);
+    setSupplierError("");
+
+
+
     } catch (error) {
       setSupplierError(error.message || "Unable to load suppliers.");
     }
   };
 
   fetchSuppliers();
-}, [supplierSearch]);
-
+}, [supplierSearch, currentPage, refreshKey]);
 
 
 
@@ -85,23 +113,10 @@ useEffect(() => {
 
 
 
-
-        const suppliersUrl = supplierSearch.trim()
-          ? `http://localhost:8080/suppliers?search=${encodeURIComponent(supplierSearch.trim())}`
-          : "http://localhost:8080/suppliers";
-
-        const suppliersResponse = await fetch(suppliersUrl);
-
-
-
-
-        if (!suppliersResponse.ok) {
-          throw new Error("Supplier was added, but the list could not be refreshed.");
-        }
-
-        const data = await suppliersResponse.json();
-        setSuppliers(data);
+        setRefreshKey((key) => key + 1);
         setSupplierError("");
+
+
       } catch (error) {
         setSupplierError(error.message || "Unable to add supplier. Check the information and try again.");
       }
@@ -149,21 +164,12 @@ const handleUpdateSupplier = async (event) => {
       setEditPhone("");
 
 
-      const suppliersUrl = supplierSearch.trim()
-        ? `http://localhost:8080/suppliers?search=${encodeURIComponent(supplierSearch.trim())}`
-        : "http://localhost:8080/suppliers";
 
-      const suppliersResponse = await fetch(suppliersUrl);
-
-
-
-      if (!suppliersResponse.ok) {
-        throw new Error("Supplier was updated, but the list could not be refreshed.");
-      }
-
-      const data = await suppliersResponse.json();
-      setSuppliers(data);
+      setRefreshKey((key) => key + 1);
       setSupplierError("");
+
+
+
     } catch (error) {
       setSupplierError(
         error.message || "Unable to update supplier. Check the information and try again."
@@ -192,22 +198,10 @@ const handleDeleteSupplier = async (supplierId) => {
 
 
 
-      const suppliersUrl = supplierSearch.trim()
-        ? `http://localhost:8080/suppliers?search=${encodeURIComponent(supplierSearch.trim())}`
-        : "http://localhost:8080/suppliers";
-
-      const suppliersResponse = await fetch(suppliersUrl);
+      setRefreshKey((key) => key + 1);
 
 
 
-
-
-      if (!suppliersResponse.ok) {
-        throw new Error("Supplier was deleted, but the list could not be refreshed.");
-      }
-
-      const data = await suppliersResponse.json();
-      setSuppliers(data);
 
       setDeleteSupplierId(null);
       setDeleteSupplierName("");
@@ -281,7 +275,12 @@ return (
       type="text"
       placeholder="Search Suppliers..."
       value={supplierSearch}
-      onChange={(event) => setSupplierSearch(event.target.value)}
+
+      onChange={(event) => {
+          setSupplierSearch(event.target.value);
+          setCurrentPage(0);
+        }}
+
     />
 
 
@@ -410,6 +409,27 @@ return (
       </div>
 
 
+    <div className="pagination-controls">
+      <button
+        type="button"
+        onClick={() => setCurrentPage((page) => page - 1)}
+        disabled={currentPage <= 0}
+      >
+        Previous
+      </button>
+
+      <span>
+        Page {totalPages === 0 ? 0 : currentPage + 1} of {totalPages}
+      </span>
+
+      <button
+        type="button"
+        onClick={() => setCurrentPage((page) => page + 1)}
+        disabled={totalPages === 0 || currentPage >= totalPages - 1}
+      >
+        Next
+      </button>
+    </div>
 
 
        {/* SUPPLIER DELETE MODAL */}
