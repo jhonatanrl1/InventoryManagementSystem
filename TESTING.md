@@ -1207,8 +1207,78 @@ This test confirms the complete product deletion workflow from the React fronten
 **Note:** A page size of 3 was used temporarily to verify multi-page navigation. The intended frontend page size is 10 products per page.
 
 
+## Product Frontend Pagination Tests
+
+### Test 1: Create a Product While Viewing a Later Page
+
+**Setup:** The product list has multiple pages, and the user is viewing a page other than Page 1.
+
+**Action:** Create a product using valid information.
+
+**Expected Result:** The product is created successfully, the form fields clear, the current page is preserved, and the product list refreshes with a valid page label.
+
+**Test Result:** Pass
+
+### Test 2: Search Products While Viewing a Later Page
+
+**Setup:** Multiple product pages exist, and the user is viewing a page other than Page 1.
+
+**Action:** Search for an existing product by name.
+
+**Expected Result:** The frontend resets to Page 1 and displays matching products instead of incorrectly showing "No products found."
+
+**Test Result:** Pass
+
+### Test 3: Clear Product Search
+
+**Setup:** A product search is active.
+
+**Action:** Clear the search input.
+
+**Expected Result:** The complete product list returns, starting at Page 1, with valid pagination information.
+
+**Test Result:** Pass
+
+### Test 4: Delete the Last Product on the Last Page
+
+**Setup:** The user is viewing the last page, which contains only one product.
+
+**Action:** Delete that product and confirm the deletion.
+
+**Expected Result:** The frontend automatically navigates to the previous valid page, displays the remaining products, and shows the correct page number and total page count.
+
+**Test Result:** Pass
 
 
+### Test 5: Search Products With Low-Stock Mode Disabled
+
+**Setup:** Multiple product pages exist, and Show Low Stock is disabled.
+
+**Action:** Search for an existing product by name or description.
+
+**Expected Result:** The frontend displays products matching the search term and maintains valid pagination.
+
+**Test Result:** Pass
+
+### Test 6: Search Products With Low-Stock Mode Enabled
+
+**Setup:** Show Low Stock is enabled, and at least one low-stock product matches the search term.
+
+**Action:** Search for a product by name or description.
+
+**Expected Result:** The frontend displays only products that match the search term and meet the low-stock condition.
+
+**Test Result:** Pass
+
+### Test 7: Clear Search While Low-Stock Mode Remains Enabled
+
+**Setup:** Show Low Stock is enabled, and a search term is active.
+
+**Action:** Clear the search input without disabling Show Low Stock.
+
+**Expected Result:** The frontend displays all low-stock products, with valid pagination.
+
+**Test Result:** Pass
 
 ## Supplier Frontend Testing
 

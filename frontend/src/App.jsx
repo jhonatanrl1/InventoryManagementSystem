@@ -50,11 +50,17 @@ const [refreshTrigger, setRefreshTrigger] = useState(0);
     params.set("page", currentPage);
     params.set("size", "10");
 
+
+
     if (lowStock) {
       params.set("lowStock", "true");
-    } else if (search.trim() !== "") {
+    }
+
+    if (search.trim() !== "") {
       params.set("search", search.trim());
     }
+
+
 
     const url = `http://localhost:8080/products?${params.toString()}`;
 
@@ -69,12 +75,35 @@ const [refreshTrigger, setRefreshTrigger] = useState(0);
 
         return response.json();
       })
-      .then((data) => {
-        setProducts(data.content);
-        setCurrentPage(data.number);
-        setTotalPages(data.totalPages);
+
+
+
+
+    .then((data) => {
+      setTotalPages(data.totalPages);
+
+      if (data.totalPages === 0) {
+        setProducts([]);
+        setCurrentPage(0);
         setLoading(false);
-      })
+        return;
+      }
+
+      if (currentPage >= data.totalPages) {
+        setCurrentPage(data.totalPages - 1);
+        return;
+      }
+
+      setProducts(data.content);
+      setCurrentPage(data.number);
+      setLoading(false);
+    })
+
+
+
+
+
+
       .catch(() => {
         setError("Unable to load products.");
         setLoading(false);
@@ -125,12 +154,8 @@ function handleAddProduct(event) {
         setSellingPrice("");
         setQuantityInStock("");
         setLowStockThreshold("");
-        setSearch("");
-        setLowStock(false);
 
-       setCurrentPage(0);
-
-       setRefreshTrigger((count) => count + 1);
+        setRefreshTrigger((count) => count + 1);
 
       })
 
@@ -331,7 +356,10 @@ function handleDeleteProduct(productId) {
         type="text"
         placeholder="Search products..."
         value={search}
-        onChange={(event) => setSearch(event.target.value)}
+        onChange={(event) => {
+          setSearch(event.target.value);
+          setCurrentPage(0);
+        }}
       />
 
 
@@ -469,7 +497,11 @@ function handleDeleteProduct(productId) {
            </button>
 
            <span>
-             Page {currentPage + 1} of {totalPages}
+
+            {totalPages === 0
+              ? "No pages"
+              : `Page ${currentPage + 1} of ${totalPages}`}
+
            </span>
 
            <button
