@@ -1,37 +1,22 @@
 package com.example.inventory_management_system.service;
 
-import com.example.inventory_management_system.model.Supplier;
-import com.example.inventory_management_system.repository.SupplierRepository;
-import org.springframework.stereotype.Service;
 import com.example.inventory_management_system.exception.SupplierNotFoundException;
-
-import java.util.List;
-
-
+import com.example.inventory_management_system.model.Supplier;
 import com.example.inventory_management_system.repository.ProductSupplierRepository;
 import com.example.inventory_management_system.repository.PurchaseRepository;
-
-
-
+import com.example.inventory_management_system.repository.SupplierRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import java.util.ArrayList;
-
-
+import org.springframework.stereotype.Service;
 
 @Service
 public class SupplierService {
 
     private final SupplierRepository supplierRepository;
-
-
     private final ProductSupplierRepository productSupplierRepository;
     private final PurchaseRepository purchaseRepository;
-
-
 
     public SupplierService(
             SupplierRepository supplierRepository,
@@ -42,14 +27,11 @@ public class SupplierService {
         this.purchaseRepository = purchaseRepository;
     }
 
-
-
-
-
     public Page<Supplier> getAllSuppliers(String search, int page, int size) {
 
         if (page < 0) {
-            throw new IllegalArgumentException("Page index cannot be negative");
+            throw new IllegalArgumentException(
+                    "Page index cannot be negative");
         }
 
         if (size < 1 || size > 100) {
@@ -67,79 +49,33 @@ public class SupplierService {
             return supplierRepository.findAll(pageable);
         }
 
-        // Search supplier name, contact name, and email.
-        List<Supplier> suppliers =
-                supplierRepository
-                        .findByNameContainingIgnoreCaseOrContactNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
-                                search, search, search);
+        String trimmedSearch = search.trim();
 
-        // Remove formatting from the search term before searching phone numbers.
-        String phoneSearch = normalizePhone(search);
+        String phoneSearch = normalizePhone(trimmedSearch);
 
         if (phoneSearch != null) {
-            List<Supplier> phoneMatches =
-                    supplierRepository.findByNormalizedPhoneContaining(phoneSearch);
-
-            // Add phone matches without duplicating suppliers already found by text search.
-            for (Supplier phoneMatch : phoneMatches) {
-                boolean alreadyIncluded = suppliers.stream()
-                        .anyMatch(supplier ->
-                                supplier.getSupplierId().equals(
-                                        phoneMatch.getSupplierId()));
-
-                if (!alreadyIncluded) {
-                    suppliers.add(phoneMatch);
-                }
-            }
+            return supplierRepository.findByNormalizedPhoneContaining(
+                    phoneSearch,
+                    pageable
+            );
         }
 
-        // Remove duplicates and apply pagination to the combined search results.
-        List<Supplier> uniqueSuppliers = new ArrayList<>(
-                suppliers.stream()
-                        .collect(java.util.stream.Collectors.toMap(
-                                Supplier::getSupplierId,
-                                supplier -> supplier,
-                                (existing, duplicate) -> existing,
-                                java.util.LinkedHashMap::new
-                        ))
-                        .values()
-        );
-
-        int start = (int) pageable.getOffset();
-
-        if (start >= uniqueSuppliers.size()) {
-            return new org.springframework.data.domain.PageImpl<>(
-                    List.of(), pageable, uniqueSuppliers.size());
-        }
-
-        int end = Math.min(start + size, uniqueSuppliers.size());
-
-        return new org.springframework.data.domain.PageImpl<>(
-                uniqueSuppliers.subList(start, end),
-                pageable,
-                uniqueSuppliers.size()
+        return supplierRepository.searchSuppliers(
+                trimmedSearch,
+                pageable
         );
     }
-
-
-
-
-
-
-
 
     public Supplier getSupplierById(Long id) {
         return supplierRepository.findById(id)
-                .orElseThrow(() -> new SupplierNotFoundException("Supplier not found"));
+                .orElseThrow(() ->
+                        new SupplierNotFoundException("Supplier not found"));
     }
-
 
     public Supplier createSupplier(Supplier supplier) {
         supplier.setNormalizedPhone(normalizePhone(supplier.getPhone()));
         return supplierRepository.save(supplier);
     }
-
-
 
     public Supplier updateSupplier(Long id, Supplier supplierDetails) {
 
@@ -149,13 +85,10 @@ public class SupplierService {
         supplier.setContactName(supplierDetails.getContactName());
         supplier.setEmail(supplierDetails.getEmail());
         supplier.setPhone(supplierDetails.getPhone());
-
         supplier.setNormalizedPhone(normalizePhone(supplier.getPhone()));
 
         return supplierRepository.save(supplier);
     }
-
-
 
     public void deleteSupplier(Long id) {
         Supplier supplier = getSupplierById(id);
@@ -174,8 +107,6 @@ public class SupplierService {
         supplierRepository.delete(supplier);
     }
 
-
-
     private String normalizePhone(String phone) {
         if (phone == null) {
             return null;
@@ -185,9 +116,5 @@ public class SupplierService {
 
         return digitsOnly.isEmpty() ? null : digitsOnly;
     }
-
-
-
-
 }
 

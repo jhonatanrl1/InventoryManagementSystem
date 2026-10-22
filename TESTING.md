@@ -2360,6 +2360,60 @@ Supplier ID 1 had been deleted. The API correctly returned 404 Not Found instead
 
 
 
+## Supplier Pagination and Search
+
+### Test 1: Retrieve the First Page of Suppliers
+
+**Setup →** Spring Boot application running with 5 suppliers in the database.
+
+**Action →** Send `GET /suppliers?page=0&size=2`.
+
+**Verification →** HTTP `200 OK`. The response contains 2 suppliers, `totalElements: 5`, and `totalPages: 3`.
+
+**Result:** Pass
+
+### Test 2: Search by Supplier Name
+
+**Setup →** TechSource Distributors exists in the database.
+
+**Action →** Send `GET /suppliers?search=TechSource&page=0&size=2`.
+
+**Verification →** HTTP `200 OK`. The response contains TechSource Distributors and reports `totalElements: 1` and `totalPages: 1`.
+
+**Result:** Pass
+
+### Test 3: Search by Phone Number
+
+**Setup →** TechSource Distributors has phone number `555-111-2222` and its normalized phone number is stored.
+
+**Action →** Send `GET /suppliers?search=555-111-2222&page=0&size=2`.
+
+**Verification →** HTTP `200 OK`. The response contains the matching supplier.
+
+**Result:** Pass
+
+### Test 4: Search by Contact Name
+
+**Setup →** Carlos Martinez is the contact for TechSource Distributors.
+
+**Action →** Send `GET /suppliers?search=Carlos&page=0&size=2`.
+
+**Verification →** HTTP `200 OK`. The response contains the matching supplier.
+
+**Result:** Pass
+
+### Test 5: Search by Email
+
+**Setup →** TechSource Distributors has email `carlos@techsource.com`.
+
+**Action →** Send `GET /suppliers?search=carlos@techsource.com&page=0&size=2`.
+
+**Verification →** HTTP `200 OK`. The response contains the matching supplier.
+
+**Result:** Pass
+
+
+
 # ProductSupplier Backend Testing
 
 ## POST ProductSupplier — Create Product-Supplier Relationship
