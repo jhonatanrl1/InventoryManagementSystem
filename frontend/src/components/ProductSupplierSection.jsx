@@ -39,6 +39,14 @@ function ProductSupplierSection() {
   const [associationsError, setAssociationsError] = useState("");
 
 
+  const [editingAssociation, setEditingAssociation] = useState(null);
+  const [editPurchasePrice, setEditPurchasePrice] = useState("");
+  const [updatingAssociation, setUpdatingAssociation] = useState(false);
+  const [updateError, setUpdateError] = useState("");
+  const [updateSuccess, setUpdateSuccess] = useState("");
+
+
+
 async function handleCreateAssociation(event) {
   event.preventDefault();
 
@@ -109,6 +117,84 @@ async function handleCreateAssociation(event) {
     setSaving(false);
   }
 }
+
+
+
+
+
+async function handleUpdatePurchasePrice(event) {
+  event.preventDefault();
+
+  if (!editingAssociation) {
+    return;
+  }
+
+  const price = Number(editPurchasePrice);
+
+  if (
+    editPurchasePrice.trim() === "" ||
+    !Number.isFinite(price) ||
+    price < 0
+  ) {
+    setUpdateError("Purchase price must be a valid non-negative number.");
+    return;
+  }
+
+  const productId = editingAssociation.product?.productId;
+  const supplierId = editingAssociation.supplier?.supplierId;
+
+  if (productId == null || supplierId == null) {
+    setUpdateError("Unable to identify the product-supplier association.");
+    return;
+  }
+
+  try {
+    setUpdatingAssociation(true);
+    setUpdateError("");
+    setUpdateSuccess("");
+
+    const response = await fetch(
+      `${API_URL}/product-suppliers/${productId}/${supplierId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          purchasePrice: price,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(
+        message || "Failed to update the purchase price."
+      );
+    }
+
+    const associationsResponse = await fetch(
+      `${API_URL}/product-suppliers`
+    );
+
+    if (!associationsResponse.ok) {
+      throw new Error(
+        "Price updated, but the association list could not be refreshed."
+      );
+    }
+
+    const associationsData = await associationsResponse.json();
+    setAssociations(associationsData);
+    setEditingAssociation(null);
+    setEditPurchasePrice("");
+    setUpdateSuccess("Purchase price updated successfully.");
+  } catch (error) {
+    setUpdateError(error.message || "Unable to update purchase price.");
+  } finally {
+    setUpdatingAssociation(false);
+  }
+}
+
 
 
 
@@ -459,6 +545,9 @@ useEffect(() => {
                 <th>Supplier ID</th>
                 <th>Supplier Name</th>
                 <th>Purchase Price</th>
+
+                <th>Actions</th>
+
               </tr>
             </thead>
 
@@ -471,18 +560,92 @@ useEffect(() => {
                   <td>{association.product?.name ?? "N/A"}</td>
                   <td>{association.supplier?.supplierId ?? "N/A"}</td>
                   <td>{association.supplier?.name ?? "N/A"}</td>
+
                   <td>
-                    {association.purchasePrice != null
-                      ? Number(association.purchasePrice).toFixed(2)
-                      : "N/A"}
+                    {editingAssociation?.product?.productId ===
+                        association.product?.productId &&
+                      editingAssociation?.supplier?.supplierId ===
+                        association.supplier?.supplierId
+                      ? (
+                        <form onSubmit={handleUpdatePurchasePrice}>
+                          <label>
+                            New purchase price
+                            <input
+                              type="number"
+                              min="0"
+                              step="0.01"
+                              value={editPurchasePrice}
+                              onChange={(event) =>
+                                setEditPurchasePrice(event.target.value)
+                              }
+                              required
+                            />
+                          </label>
+
+                          <button type="submit" disabled={updatingAssociation}>
+                            {updatingAssociation ? "Saving..." : "Save Price"}
+                          </button>
+
+                          <button
+                            type="button"
+                            disabled={updatingAssociation}
+                            onClick={() => {
+                              setEditingAssociation(null);
+                              setEditPurchasePrice("");
+                              setUpdateError("");
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </form>
+                      )
+                      : (
+                        association.purchasePrice != null
+                          ? Number(association.purchasePrice).toFixed(2)
+                          : "N/A"
+                      )}
                   </td>
+
+                  <td>
+                    {!(
+                      editingAssociation?.product?.productId ===
+                        association.product?.productId &&
+                      editingAssociation?.supplier?.supplierId ===
+                        association.supplier?.supplierId
+                    ) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingAssociation(association);
+                          setEditPurchasePrice(
+                            association.purchasePrice == null
+                              ? ""
+                              : String(association.purchasePrice)
+                          );
+                          setUpdateError("");
+                          setUpdateSuccess("");
+                        }}
+                      >
+                        Edit Price
+                      </button>
+                    )}
+                  </td>
+
+
+
                 </tr>
               ))}
             </tbody>
           </table>
+
+
+
+
         )}
 
 
+          {updateError && <p role="alert">{updateError}</p>}
+          {updateSuccess && <p role="status">{updateSuccess}</p>}
 
 
     </section>

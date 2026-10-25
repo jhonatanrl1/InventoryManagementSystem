@@ -2980,7 +2980,35 @@ The API correctly handled the invalid Product-Supplier relationship using Produc
 **Test Result:** Pass
 
 
+**Test 23 — Update Purchase Price**
 
+**SETUP →** An existing product-supplier association has a purchase price of `47.00`.
+
+**ACTION →** Click **Edit Price**, change the price to `45.00`, and click **Save Price**.
+
+**VERIFICATION →** The success message appears, the association table displays `45.00`, and DBeaver confirms that the stored purchase price is `45.00`.
+
+**Test Result:** Pass
+
+**Test 24 — Cancel Editing**
+
+**SETUP →** Open Edit Price for an existing association.
+
+**ACTION →** Change the purchase price, then click **Cancel**.
+
+**VERIFICATION →** The editing controls disappear, the original price remains displayed, and the database remains unchanged.
+
+**Test Result:** Pass
+
+**Test 25 — Reject a Negative Purchase Price**
+
+**SETUP →** Open Edit Price for an existing association.
+
+**ACTION →** Attempt to enter a negative price and save.
+
+**VERIFICATION →** Browser validation prevents submission, and the stored purchase price remains unchanged.
+
+**Test Result:** Pass
 
 
 # Purchase Backend Testing
