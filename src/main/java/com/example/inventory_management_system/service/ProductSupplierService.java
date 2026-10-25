@@ -14,6 +14,12 @@ import com.example.inventory_management_system.exception.SupplierNotFoundExcepti
 
 import java.util.List;
 
+
+import org.springframework.dao.DataIntegrityViolationException;
+
+
+import com.example.inventory_management_system.exception.DuplicateProductSupplierException;
+
 @Service
 public class ProductSupplierService {
 
@@ -46,6 +52,16 @@ public class ProductSupplierService {
         if (!supplierRepository.existsById(supplierId)) {
             throw new SupplierNotFoundException("Supplier not found");
         }
+
+
+        ProductSupplierId id = new ProductSupplierId(productId, supplierId);
+
+        if (productSupplierRepository.existsById(id)) {
+            throw new DuplicateProductSupplierException(
+                    "This product is already associated with this supplier."
+            );
+        }
+
 
         return productSupplierRepository.save(productSupplier);
     }

@@ -3,6 +3,9 @@ import "./App.css";
 
 import SupplierSection from "./components/SupplierSection";
 
+
+import ProductSupplierSection from "./components/ProductSupplierSection";
+
 function App() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
@@ -33,7 +36,6 @@ function App() {
 
 
 
-  const [showSuppliers, setShowSuppliers] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -41,6 +43,9 @@ function App() {
 
 
 const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+
+const [activeSection, setActiveSection] = useState("products");
 
 
 
@@ -253,29 +258,40 @@ function handleDeleteProduct(productId) {
       <h1>Inventory Management System</h1>
 
 
-      <div className="view-toggle">
-        <button
-          type="button"
-          onClick={() => setShowSuppliers(false)}
-        >
-          Products
-        </button>
+     <div className="view-toggle">
+       <button
+         type="button"
+         onClick={() => setActiveSection("products")}
+       >
+         Products
+       </button>
 
-        <button
-          type="button"
-          onClick={() => setShowSuppliers(true)}
-        >
-          Suppliers
-        </button>
-      </div>
+       <button
+         type="button"
+         onClick={() => setActiveSection("suppliers")}
+       >
+         Suppliers
+       </button>
+
+       <button
+         type="button"
+         onClick={() => setActiveSection("product-suppliers")}
+       >
+         Product-Suppliers
+       </button>
+     </div>
 
 
-    {!showSuppliers && (
-      <h2>Add Product</h2>
-    )}
 
-    {!showSuppliers && (
+
+  {activeSection === "products" && (
+    <h2>Add Product</h2>
+  )}
+
+
+    {activeSection === "products" && (
       <form onSubmit={handleAddProduct}>
+
       <input
         type="text"
         placeholder="Product name"
@@ -332,12 +348,17 @@ function handleDeleteProduct(productId) {
 
 
 
-{showSuppliers && <SupplierSection />}
+{activeSection === "suppliers" && <SupplierSection />}
+
+
+{activeSection === "product-suppliers" && (
+  <ProductSupplierSection />
+)}
 
 
 
-{!showSuppliers && (
-      <>
+{activeSection === "products" && (
+  <>
 
 
 

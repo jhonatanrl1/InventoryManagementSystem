@@ -2713,6 +2713,254 @@ ProductSupplier not found
 
 The API correctly handled the invalid Product-Supplier relationship using ProductSupplierNotFoundException and returned a 404 Not Found response.
 
+
+
+
+
+## Product-Supplier Frontend Testing
+
+### Test 1: Search Products by Name
+
+**SETUP →** Open the Product-Supplier section and locate the product search field.
+
+**ACTION →** Enter `Keyboard` in the product search field.
+
+**VERIFICATION →**
+- Matching products are displayed.
+- Products that do not match the search term are excluded.
+
+**TEST RESULT:** Pass
+
+### Test 2: Search Products by Description
+
+**SETUP →** Open the Product-Supplier section.
+
+**ACTION →** Enter a search term that appears in a product description.
+
+**VERIFICATION →**
+- Products matching the description search are displayed.
+
+**TEST RESULT:** Pass
+
+### Test 3: Search Suppliers by Name
+
+**SETUP →** Open the Product-Supplier section and locate the supplier search field.
+
+**ACTION →** Enter `TechSource` in the supplier search field.
+
+**VERIFICATION →**
+- TechSource Distributors appears in the results.
+- Suppliers that do not match the search term are excluded.
+
+**TEST RESULT:** Pass
+
+### Test 4: Search Suppliers by Contact Name
+
+**SETUP →** Open the Product-Supplier section.
+
+**ACTION →** Search for a supplier using the contact name `Carlos Martinez`.
+
+**VERIFICATION →**
+- TechSource Distributors appears in the results.
+
+**TEST RESULT:** Pass
+
+### Test 5: Search Suppliers by Phone Number
+
+**SETUP →** Open the Product-Supplier section.
+
+**ACTION →** Search for a supplier using its phone number.
+
+**VERIFICATION →**
+- The matching supplier appears in the results.
+
+**TEST RESULT:** Pass
+
+### Test 6: Search Suppliers by Email
+
+**SETUP →** Open the Product-Supplier section.
+
+**ACTION →** Search for a supplier using its email address.
+
+**VERIFICATION →**
+- The matching supplier appears in the results.
+
+**TEST RESULT:** Pass
+
+### Test 7: Clear Product Search
+
+**SETUP →** Enter a product search term that returns matching results.
+
+**ACTION →** Clear the product search field.
+
+**VERIFICATION →**
+- The product results reload without the previous search filter.
+- Pagination returns to the first page.
+
+**TEST RESULT:** Pass
+
+### Test 8: Clear Supplier Search
+
+**SETUP →** Enter a supplier search term that returns matching results.
+
+**ACTION →** Clear the supplier search field.
+
+**VERIFICATION →**
+- The supplier results reload without the previous search filter.
+- Pagination returns to the first page.
+
+**TEST RESULT:** Pass
+
+### Test 9: Search with No Matching Products
+
+**SETUP →** Open the Product-Supplier section.
+
+**ACTION →** Enter a product search term that does not match any product.
+
+**VERIFICATION →**
+- A no-products-found message is displayed.
+- No unrelated products are displayed.
+
+**TEST RESULT:** Pass
+
+### Test 10: Search with No Matching Suppliers
+
+**SETUP →** Open the Product-Supplier section.
+
+**ACTION →** Enter a supplier search term that does not match any supplier.
+
+**VERIFICATION →**
+- A no-suppliers-found message is displayed.
+- No unrelated suppliers are displayed.
+
+**TEST RESULT:** Pass
+
+### Test 11: Product Selector Pagination — Next Page
+
+**SETUP →** Temporarily set `PAGE_SIZE` to `2` in `ProductSupplierSection.jsx` and ensure enough products exist to fill multiple pages.
+
+**ACTION →** Click the Next button in the product selector.
+
+**VERIFICATION →**
+- The next page of products is displayed.
+- Each page displays up to two products.
+
+**TEST RESULT:** Pass
+
+### Test 12: Product Selector Pagination — Previous Page
+
+**SETUP →** Navigate to a product selector page after the first page.
+
+**ACTION →** Click the Previous button.
+
+**VERIFICATION →**
+- The previous page of products is displayed.
+
+**TEST RESULT:** Pass
+
+### Test 13: Supplier Selector Pagination — Next Page
+
+**SETUP →** Temporarily set `PAGE_SIZE` to `2` in `ProductSupplierSection.jsx` and ensure enough suppliers exist to fill multiple pages.
+
+**ACTION →** Click the Next button in the supplier selector.
+
+**VERIFICATION →**
+- The next page of suppliers is displayed.
+- Each page displays up to two suppliers.
+
+**TEST RESULT:** Pass
+
+### Test 14: Supplier Selector Pagination — Previous Page
+
+**SETUP →** Navigate to a supplier selector page after the first page.
+
+**ACTION →** Click the Previous button.
+
+**VERIFICATION →**
+- The previous page of suppliers is displayed.
+
+**TEST RESULT:** Pass
+
+### Test 15: Select a Product and Supplier
+
+**SETUP →** Open the create-association form.
+
+**ACTION →** Select a product and a supplier from their respective selectors.
+
+**VERIFICATION →**
+- Both selections can be made.
+- The selected product and supplier are used when submitting the form.
+
+**TEST RESULT:** Pass
+
+### Test 16: Create a Product-Supplier Association
+
+**SETUP →** Select a valid product and supplier that are not already associated.
+
+**ACTION →** Enter a purchase price of `47.00` and submit the form.
+
+**VERIFICATION →**
+- The association is created successfully.
+- The frontend displays `Product-supplier association created successfully.`
+- The new association is present in the MySQL database, verified using DBeaver.
+
+**TEST RESULT:** Pass
+
+### Test 17: Validate Missing Product or Supplier
+
+**SETUP →** Open the create-association form.
+
+**ACTION →** Attempt to submit the form without selecting both a product and a supplier.
+
+**VERIFICATION →**
+- The association is not created.
+- The frontend displays `Please select both a product and a supplier.`
+
+**TEST RESULT:** Pass
+
+### Test 18: Validate Negative Purchase Price
+
+**SETUP →** Select a valid product and supplier.
+
+**ACTION →** Attempt to enter a negative purchase price.
+
+**VERIFICATION →**
+- The negative value is rejected by the form's number-input validation.
+- The association is not created.
+
+**TEST RESULT:** Pass
+
+### Test 19: Reject Duplicate Product-Supplier Association
+
+**SETUP →** An association already exists for product ID `3` and supplier ID `3`.
+
+**ACTION →** Submit the same product-supplier pair again using `POST /product-suppliers`.
+
+**VERIFICATION →**
+- HTTP status: `409 Conflict`.
+- Response message: `This product is already associated with this supplier.`
+- DBeaver confirms that only one row exists for the duplicate product-supplier pair.
+
+**TEST RESULT:** Pass
+
+### Test 20: Create a Different Valid Association After a Duplicate Attempt
+
+**SETUP →** An association already exists for product ID `3` and supplier ID `3`.
+
+**ACTION →** Submit a different, valid product-supplier pair.
+
+**VERIFICATION →**
+- The new association is created successfully.
+- The duplicate-association validation does not prevent valid associations from being created.
+
+**TEST RESULT:** Pass
+
+
+
+
+
+
+
 # Purchase Backend Testing
 
 ## POST Purchase

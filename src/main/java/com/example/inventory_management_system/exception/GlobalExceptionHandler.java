@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 
 import com.example.inventory_management_system.exception.PurchaseNotFoundException;
 
+import com.example.inventory_management_system.exception.DuplicateProductSupplierException;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,6 +80,18 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
     }
+
+
+    @ExceptionHandler(DuplicateProductSupplierException.class)
+    public ResponseEntity<String> handleDuplicateProductSupplier(
+            DuplicateProductSupplierException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
+    }
+
+
 
 
 
