@@ -2957,6 +2957,28 @@ The API correctly handled the invalid Product-Supplier relationship using Produc
 
 
 
+### Product-Supplier Association List
+
+**Test 21 — Display Existing Associations**
+
+**Setup →** At least one product-supplier association exists in the database.
+
+**Action →** Open the Product-Suppliers section.
+
+**Verification →** The association list displays the product ID, product name, supplier ID, supplier name, and purchase price.
+
+**Test Result:** Pass
+
+**Test 22 — Create Association and Refresh List**
+
+**Setup →** Select a valid product and supplier that are not already associated.
+
+**Action →** Create the association with a purchase price of `47.00`.
+
+**Verification →** The success message appears, and the newly created association appears in the list without refreshing the browser. The purchase price matches the database.
+
+**Test Result:** Pass
+
 
 
 

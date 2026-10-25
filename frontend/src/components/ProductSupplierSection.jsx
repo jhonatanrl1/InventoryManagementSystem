@@ -33,6 +33,12 @@ function ProductSupplierSection() {
   const [saveSuccess, setSaveSuccess] = useState("");
 
 
+
+  const [associations, setAssociations] = useState([]);
+  const [associationsLoading, setAssociationsLoading] = useState(true);
+  const [associationsError, setAssociationsError] = useState("");
+
+
 async function handleCreateAssociation(event) {
   event.preventDefault();
 
@@ -79,6 +85,24 @@ async function handleCreateAssociation(event) {
 
     setSaveSuccess("Product-supplier association created successfully.");
     setPurchasePrice("");
+
+
+    const associationsResponse = await fetch(
+      `${API_URL}/product-suppliers`
+    );
+
+    if (!associationsResponse.ok) {
+      throw new Error(
+        "Association was created, but the list could not be refreshed."
+      );
+    }
+
+    const associationsData = await associationsResponse.json();
+    setAssociations(associationsData);
+
+
+
+
   } catch (err) {
     setSaveError(err.message || "Unable to create association.");
   } finally {
@@ -183,6 +207,56 @@ async function handleCreateAssociation(event) {
       controller.abort();
     };
   }, [supplierSearch, supplierPage]);
+
+
+
+
+// Load existing product-supplier associations.
+useEffect(() => {
+  const controller = new AbortController();
+
+  async function loadAssociations() {
+    try {
+      setAssociationsLoading(true);
+      setAssociationsError("");
+
+      const response = await fetch(
+        `${API_URL}/product-suppliers`,
+        { signal: controller.signal }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to load product-supplier associations.");
+      }
+
+      const data = await response.json();
+
+      setAssociations(data);
+    } catch (err) {
+      if (err.name !== "AbortError") {
+        setAssociationsError(
+          "Unable to load product-supplier associations."
+        );
+      }
+    } finally {
+      if (!controller.signal.aborted) {
+        setAssociationsLoading(false);
+      }
+    }
+  }
+
+  loadAssociations();
+
+  return () => controller.abort();
+}, []);
+
+
+
+
+
+
+
+
 
   return (
     <section className="product-supplier-section">
@@ -354,6 +428,59 @@ async function handleCreateAssociation(event) {
 
       {saveError && <p role="alert">{saveError}</p>}
       {saveSuccess && <p role="status">{saveSuccess}</p>}
+
+
+
+
+      <hr />
+
+      <h3>Existing Product-Supplier Associations</h3>
+
+      {associationsLoading && <p>Loading associations...</p>}
+
+      {associationsError && (
+        <p role="alert">{associationsError}</p>
+      )}
+
+      {!associationsLoading &&
+        !associationsError &&
+        associations.length === 0 && (
+          <p>No product-supplier associations found.</p>
+        )}
+
+      {!associationsLoading &&
+        !associationsError &&
+        associations.length > 0 && (
+          <table>
+            <thead>
+              <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Supplier ID</th>
+                <th>Supplier Name</th>
+                <th>Purchase Price</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {associations.map((association) => (
+                <tr
+                  key={`${association.product?.productId}-${association.supplier?.supplierId}`}
+                >
+                  <td>{association.product?.productId ?? "N/A"}</td>
+                  <td>{association.product?.name ?? "N/A"}</td>
+                  <td>{association.supplier?.supplierId ?? "N/A"}</td>
+                  <td>{association.supplier?.name ?? "N/A"}</td>
+                  <td>
+                    {association.purchasePrice != null
+                      ? Number(association.purchasePrice).toFixed(2)
+                      : "N/A"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
 
 
 
