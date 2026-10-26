@@ -3010,6 +3010,37 @@ The API correctly handled the invalid Product-Supplier relationship using Produc
 
 **Test Result:** Pass
 
+**Test 26 — Cancel Association Deletion**
+
+**SETUP →** An existing product-supplier association is displayed in the association table.
+
+**ACTION →** Click **Delete** to open the custom confirmation modal, then click **Cancel**.
+
+**VERIFICATION →** The modal closes, the association remains in the table, and the association record remains unchanged in the database.
+
+**Test Result:** Pass
+
+**Test 27 — Confirm Association Deletion**
+
+**SETUP →** An existing product-supplier association is displayed in the association table.
+
+**ACTION →** Click **Delete**, verify the modal displays the correct product and supplier names, and confirm deletion by clicking **Delete** in the modal.
+
+**VERIFICATION →** The modal closes, the success message appears, the association disappears from the table, and the association is deleted through `DELETE /product-suppliers/{productId}/{supplierId}`. The associated product and supplier themselves remain intact.
+
+**Test Result:** Pass
+
+**Test 28 — Empty Association List**
+
+**SETUP →** All product-supplier associations have been deleted.
+
+**ACTION →** Open or refresh the Product-Supplier Association section.
+
+**VERIFICATION →** The message `No product-supplier associations found.` appears, the association table is hidden, and no loading or error message remains.
+
+**Test Result:** Pass
+
+
 
 # Purchase Backend Testing
 

@@ -46,6 +46,14 @@ function ProductSupplierSection() {
   const [updateSuccess, setUpdateSuccess] = useState("");
 
 
+  const [deletingAssociation, setDeletingAssociation] = useState(null);
+  const [deleteError, setDeleteError] = useState("");
+  const [deleteSuccess, setDeleteSuccess] = useState("");
+
+
+  const [deleteAssociationTarget, setDeleteAssociationTarget] = useState(null);
+
+
 
 async function handleCreateAssociation(event) {
   event.preventDefault();
@@ -193,6 +201,81 @@ async function handleUpdatePurchasePrice(event) {
   } finally {
     setUpdatingAssociation(false);
   }
+}
+
+
+
+
+
+async function confirmDeleteAssociation() {
+  if (!deleteAssociationTarget) return;
+
+  const productId = deleteAssociationTarget.product?.productId;
+  const supplierId = deleteAssociationTarget.supplier?.supplierId;
+
+  if (productId == null || supplierId == null) {
+    setDeleteError(
+      "Unable to identify the product-supplier association."
+    );
+    setDeleteAssociationTarget(null);
+    return;
+  }
+
+  try {
+    setDeletingAssociation(deleteAssociationTarget);
+    setDeleteError("");
+    setDeleteSuccess("");
+
+    const response = await fetch(
+      `${API_URL}/product-suppliers/${productId}/${supplierId}`,
+      { method: "DELETE" }
+    );
+
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(
+        message || "Failed to delete the association."
+      );
+    }
+
+    setAssociations((currentAssociations) =>
+      currentAssociations.filter(
+        (item) =>
+          item.product?.productId !== productId ||
+          item.supplier?.supplierId !== supplierId
+      )
+    );
+
+    if (
+      editingAssociation?.product?.productId === productId &&
+      editingAssociation?.supplier?.supplierId === supplierId
+    ) {
+      setEditingAssociation(null);
+      setEditPurchasePrice("");
+    }
+
+    setDeleteSuccess(
+      "Product-supplier association deleted successfully."
+    );
+
+    setDeleteAssociationTarget(null);
+  } catch (error) {
+    setDeleteError(
+      error.message || "Unable to delete the association."
+    );
+  } finally {
+    setDeletingAssociation(null);
+  }
+}
+
+
+
+
+
+function handleDeleteAssociation(association) {
+  setDeleteError("");
+  setDeleteSuccess("");
+  setDeleteAssociationTarget(association);
 }
 
 
@@ -606,36 +689,63 @@ useEffect(() => {
                       )}
                   </td>
 
-                  <td>
-                    {!(
-                      editingAssociation?.product?.productId ===
-                        association.product?.productId &&
-                      editingAssociation?.supplier?.supplierId ===
-                        association.supplier?.supplierId
-                    ) && (
+
+
+
+
+
+
+                    <td>
+                      {!(
+                        editingAssociation?.product?.productId ===
+                          association.product?.productId &&
+                        editingAssociation?.supplier?.supplierId ===
+                          association.supplier?.supplierId
+                      ) && (
+                        <button
+                          type="button"
+                          disabled={deletingAssociation !== null || updatingAssociation}
+                          onClick={() => {
+                            setEditingAssociation(association);
+                            setEditPurchasePrice(
+                              association.purchasePrice == null
+                                ? ""
+                                : String(association.purchasePrice)
+                            );
+                            setUpdateError("");
+                            setUpdateSuccess("");
+                            setDeleteError("");
+                            setDeleteSuccess("");
+                          }}
+                        >
+                          Edit Price
+                        </button>
+                      )}
+
                       <button
                         type="button"
-                        onClick={() => {
-                          setEditingAssociation(association);
-                          setEditPurchasePrice(
-                            association.purchasePrice == null
-                              ? ""
-                              : String(association.purchasePrice)
-                          );
-                          setUpdateError("");
-                          setUpdateSuccess("");
-                        }}
+                        disabled={deletingAssociation !== null || updatingAssociation}
+                        onClick={() => handleDeleteAssociation(association)}
                       >
-                        Edit Price
+                        {deletingAssociation?.product?.productId ===
+                            association.product?.productId &&
+                          deletingAssociation?.supplier?.supplierId ===
+                            association.supplier?.supplierId
+                          ? "Deleting..."
+                          : "Delete"}
                       </button>
-                    )}
-                  </td>
+                    </td>
+
+
 
 
 
                 </tr>
               ))}
             </tbody>
+
+
+
           </table>
 
 
@@ -646,6 +756,55 @@ useEffect(() => {
 
           {updateError && <p role="alert">{updateError}</p>}
           {updateSuccess && <p role="status">{updateSuccess}</p>}
+
+
+          {deleteError && <p role="alert">{deleteError}</p>}
+          {deleteSuccess && <p role="status">{deleteSuccess}</p>}
+
+
+
+          {/* PRODUCT-SUPPLIER ASSOCIATION DELETE MODAL */}
+          {deleteAssociationTarget !== null && (
+            <div className="delete-modal-overlay">
+              <div className="delete-modal">
+                <h2>Delete Product-Supplier Association</h2>
+
+                <p>
+                  Are you sure you want to remove the association between
+                  product "{deleteAssociationTarget.product?.name ?? "N/A"}"
+                  and supplier "{deleteAssociationTarget.supplier?.name ?? "N/A"}"?
+                </p>
+
+                <p>
+                  The product and supplier themselves will not be deleted.
+                </p>
+
+                <div className="delete-modal-buttons">
+                  <button
+                    type="button"
+                    disabled={deletingAssociation !== null}
+                    onClick={() => {
+                      setDeleteAssociationTarget(null);
+                      setDeleteError("");
+                    }}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={deletingAssociation !== null}
+                    onClick={confirmDeleteAssociation}
+                  >
+                    {deletingAssociation !== null
+                      ? "Deleting..."
+                      : "Delete"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
 
 
     </section>
