@@ -16,6 +16,10 @@ import com.example.inventory_management_system.exception.PurchaseNotFoundExcepti
 
 import java.util.List;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Service
 public class PurchaseService {
 
@@ -75,9 +79,11 @@ public class PurchaseService {
 
 
 
-    public List<Purchase> getAllPurchases() {
-        return purchaseRepository.findAll();
+
+    public Page<Purchase> getAllPurchases(Pageable pageable) {
+        return purchaseRepository.findAll(pageable);
     }
+
 
     public Purchase getPurchase(Long id) {
         return purchaseRepository.findById(id)

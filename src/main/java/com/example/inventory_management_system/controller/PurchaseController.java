@@ -6,6 +6,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+
 @RestController
 @RequestMapping("/purchases")
 public class PurchaseController {
@@ -22,10 +31,40 @@ public class PurchaseController {
         return purchaseService.createPurchase(purchase);
     }
 
+
+
+
     @GetMapping
-    public List<Purchase> getAllPurchases() {
-        return purchaseService.getAllPurchases();
+    public Page<Purchase> getAllPurchases(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        if (page < 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Page number must be 0 or greater."
+            );
+        }
+
+        if (size < 1 || size > 100) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Page size must be between 1 and 100."
+            );
+        }
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.DESC, "purchaseId")
+        );
+
+        return purchaseService.getAllPurchases(pageable);
     }
+
+
+
+
 
     @GetMapping("/{id}")
     public Purchase getPurchase(@PathVariable Long id) {

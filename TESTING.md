@@ -3395,6 +3395,50 @@ Supplier not found
 
 The API correctly detected that Product ID 999 does not exist and returned a 404 Not Found response using ProductNotFoundException.
 
+
+
+## GET Purchases — Server-Side Pagination
+
+**Endpoint:** `GET /purchases?page=0&size=2`
+
+**SETUP →** Five purchase records exist in the database.
+
+**ACTION →** Request page 0 with a page size of 2.
+
+**VERIFICATION →** Pass — The API returned two purchases in the `content` array, `totalElements: 5`, and `totalPages: 3`. Results were sorted by `purchaseId` descending.
+
+## GET Purchases — Reject Negative Page Number
+
+**Endpoint:** `GET /purchases?page=-1&size=2`
+
+**SETUP →** Purchase pagination is enabled.
+
+**ACTION →** Request a negative page number.
+
+**VERIFICATION →** Pass — The API returned `400 Bad Request`.
+
+## GET Purchases — Reject Zero Page Size
+
+**Endpoint:** `GET /purchases?page=0&size=0`
+
+**SETUP →** Purchase pagination is enabled.
+
+**ACTION →** Request a page size of zero.
+
+**VERIFICATION →** Pass — The API returned `400 Bad Request`.
+
+## GET Purchases — Reject Page Size Above Maximum
+
+**Endpoint:** `GET /purchases?page=0&size=101`
+
+**SETUP →** The maximum permitted page size is 100.
+
+**ACTION →** Request a page size of 101.
+
+**VERIFICATION →** Pass — The API returned `400 Bad Request`.
+
+
+
 # Automated Tests
 
 ## ProductServiceTest
