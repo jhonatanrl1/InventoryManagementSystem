@@ -3439,6 +3439,50 @@ The API correctly detected that Product ID 999 does not exist and returned a 404
 
 
 
+### Purchase History — Frontend Pagination
+
+**Component:** `PurchaseSection.jsx`
+
+**Page Size:** 2 (temporary test configuration)
+
+**Test 1 — First Page**
+
+**SETUP →** Five purchase records exist in the database.
+
+**ACTION →** Open the Purchases section.
+
+**VERIFICATION →** Pass — Purchases 5 and 4 appeared. Page indicator displayed `Page 1 of 3`. Previous was disabled and Next was enabled.
+
+**Test 2 — Second Page**
+
+**SETUP →** Currently viewing Page 1.
+
+**ACTION →** Click Next.
+
+**VERIFICATION →** Pass — Purchases 3 and 2 appeared. Page indicator displayed `Page 2 of 3`. Both navigation buttons were enabled.
+
+**Test 3 — Third Page**
+
+**SETUP →** Currently viewing Page 2.
+
+**ACTION →** Click Next.
+
+**VERIFICATION →** Pass — Purchase 1 appeared. Page indicator displayed `Page 3 of 3`. Previous was enabled and Next was disabled.
+
+**Test 4 — Return to First Page**
+
+**SETUP →** Currently viewing Page 3.
+
+**ACTION →** Click Previous twice.
+
+**VERIFICATION →** Pass — The frontend returned to Page 1 and displayed purchases 5 and 4.
+
+**Final Configuration:** Restored `PAGE_SIZE` to 10.
+
+
+
+
+
 # Automated Tests
 
 ## ProductServiceTest

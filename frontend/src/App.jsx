@@ -6,6 +6,8 @@ import SupplierSection from "./components/SupplierSection";
 
 import ProductSupplierSection from "./components/ProductSupplierSection";
 
+import PurchaseSection from "./components/PurchaseSection";
+
 function App() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
@@ -279,6 +281,16 @@ function handleDeleteProduct(productId) {
        >
          Product-Suppliers
        </button>
+
+
+
+       <button
+         type="button"
+         onClick={() => setActiveSection("purchases")}
+       >
+         Purchases
+       </button>
+
      </div>
 
 
@@ -354,6 +366,10 @@ function handleDeleteProduct(productId) {
 {activeSection === "product-suppliers" && (
   <ProductSupplierSection />
 )}
+
+
+
+{activeSection === "purchases" && <PurchaseSection />}
 
 
 
