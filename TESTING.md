@@ -3482,6 +3482,56 @@ The API correctly detected that Product ID 999 does not exist and returned a 404
 
 
 
+### Purchase Creation — Frontend Form
+
+**Component:** `PurchaseSection.jsx`
+
+**Endpoint:** `POST /purchases`
+
+**Test 1 — Load Supplier and Product Options**
+
+**SETUP →** Open the Purchases section and wait for supplier/product options to load.
+
+**ACTION →** View the supplier and product selection controls.
+
+**VERIFICATION →** Pass — Supplier and product options loaded successfully.
+
+**Test 2 — Enter Purchase Information**
+
+**SETUP →** Supplier and product options have loaded.
+
+**ACTION →** Select a valid supplier, select a product, enter quantity `2`, and enter purchase price `45`.
+
+**VERIFICATION →** Pass — Selected values remained visible in the form.
+
+**Test 3 — Create Purchase**
+
+**SETUP →** Select a valid supplier and product; enter quantity `2` and purchase price `45`.
+
+**ACTION →** Click Create Purchase once.
+
+**VERIFICATION →** Pass — Purchase was successfully created through the backend.
+
+**Test 4 — Success Message and Form Reset**
+
+**SETUP →** A purchase has been successfully submitted.
+
+**ACTION →** Observe the form after submission.
+
+**VERIFICATION →** Pass — Success message appeared and form fields cleared.
+
+**Test 5 — Automatic Purchase History Refresh**
+
+**SETUP →** A purchase has been successfully created.
+
+**ACTION →** Observe the purchase history without manually refreshing the browser.
+
+**VERIFICATION →** Pass — Purchase history refreshed automatically, the newest purchase appeared at the top, and its generated purchase ID was visible.
+
+
+
+
+
 
 # Automated Tests
 
